@@ -41,11 +41,12 @@ setup(
     packages=find_packages(include=['willutil_cpp', 'willutil_cpp.*']),
     test_suite='pytest',
     tests_require=['pytest'],
-    install_requires=[
-        'numpy',
-        'icecream',
-    ],
-    cmdclass={"build_ext": build_ext, 'install': install},
+    setup_requires=['pybind11', 'numpy', 'icecream'],
+    install_requires=['pybind11', 'numpy', 'icecream'],
+    cmdclass={
+        "build_ext": build_ext,
+        'install': install
+    },
     ext_modules=ext_modules,
     #      package_data={
     #          'willutil_cpp': [
