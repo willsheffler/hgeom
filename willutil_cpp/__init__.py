@@ -1,12 +1,10 @@
-import icecream as ic
-
 from willutil_cpp.bunch import Bunch, bunchify, unbunchify
 from willutil_cpp.timer import Timer, timed, checkpoint
+
 
 from willutil_cpp import homog
 from willutil_cpp import bvh
 from willutil_cpp import phmap
-from willutil_cpp import util
 from willutil_cpp import cluster
 from willutil_cpp import geom
 from willutil_cpp import rms
@@ -90,7 +88,6 @@ from willutil_cpp.homog import (
    to_xyz,
 )
 
-ic.install()
 
 
 #__all__ = ('MonteCarlo', 'RigidBody', 'compute_symfit', 'dssp', 'halign', 'halign2', 'halign_vector', 'hangle',

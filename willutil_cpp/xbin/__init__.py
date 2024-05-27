@@ -1,7 +1,3 @@
-from cppimport import import_hook
-import cppimport
-
-cppimport.turn_off_strict_prototypes()
 from willutil_cpp.xbin.xbin import *
 from willutil_cpp.xbin.xbin_util import *
 # from .smear import *

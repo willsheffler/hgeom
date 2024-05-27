@@ -1,4 +1,3 @@
-from cppimport import import_hook
 
 from willutil_cpp.geom.bcc import *
 from willutil_cpp.geom.miniball import *
