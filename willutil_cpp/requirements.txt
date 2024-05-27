@@ -1,0 +1,23 @@
+pytest
+pytest-xdist
+flake8
+tqdm
+yapf
+deferred_import
+numpy
+cppimport
+pandas
+xarray
+netcdf4
+rmsd
+seaborn
+opt_einsum
+icecream
+numba
+colorama
+Bio
+
+--find-links https://download.pytorch.org/whl/cpu
+torch
+torchvision
+torchaudio
