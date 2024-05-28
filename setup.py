@@ -26,8 +26,9 @@ ext_modules = intree_extensions([
 for e in ext_modules:
     e.include_dirs.append('.')
     e.include_dirs.append('willutil_cpp/extern')
-    e.extra_compile_args += ['-w']
-    # e.extra_compile_args += ['-std=c++17', '-O3', '-march=native', '-fPIC', '-w']
+    e.include_dirs.append('/usr/include')
+    # e.extra_compile_args += ['-w']
+    e.extra_compile_args += ['-std=c++17', '-O3', '-march=native', '-fPIC', '-w']
 
 # ParallelCompile("NPY_NUM_BUILD_JOBS", default=8).install()
 
