@@ -1,13 +1,13 @@
 /*/*cppimport
 <%
-
-
-cfg['include_dirs'] = ['../..','../extern']
+import os
+include = os.path.join(os.path.dirname(self.filename),'../..')
+cfg['include_dirs'] = [include, f'{include}/willutil_cpp/extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['../geom/bcc.hpp','../util/assertions.hpp',
 '../util/global_rng.hpp', 'xbin.hpp', '../util/numeric.hpp',
 '../util/pybind_types.hpp']
-cfg['parallel'] = False
+cfg['parallel'] = True
 
 
 setup_pybind11(cfg)

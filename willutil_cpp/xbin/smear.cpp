@@ -2,12 +2,14 @@
 <%
 
 
-cfg['include_dirs'] = ['../..','../extern']
+import os
+include = os.path.join(os.path.dirname(self.filename),'../..')
+cfg['include_dirs'] = [include, f'{include}/willutil_cpp/extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['xbin.hpp', '../phmap/phmap.hpp', 'smear.hpp',
 '../geom/bcc.hpp']
 
-cfg['parallel'] = False
+cfg['parallel'] = True
 
 
 setup_pybind11(cfg)
@@ -41,5 +43,5 @@ PYBIND11_MODULE(smear, m) {
   bind_smear<float, uint64_t, float>(m, "smear");
 }
 
-}  // namespace xbin
-}  // namespace rpxdock
+} // namespace xbin
+} // namespace rpxdock

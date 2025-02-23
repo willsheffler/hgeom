@@ -2,12 +2,14 @@
 <%
 
 
-cfg['include_dirs'] = ['../..','../extern']
+import os
+include = os.path.join(os.path.dirname(self.filename),'../..')
+cfg['include_dirs'] = [include, f'{include}/willutil_cpp/extern']
 cfg['compiler_args'] = ['-std=c++17', '-w']
 cfg['dependencies'] = ['../geom/primitive.hpp','../util/assertions.hpp',
 '../util/global_rng.hpp']
 
-cfg['parallel'] = False
+cfg['parallel'] = True
 
 
 setup_pybind11(cfg)

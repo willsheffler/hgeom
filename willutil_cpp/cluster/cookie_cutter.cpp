@@ -2,11 +2,13 @@
 <%
 
 
-cfg['include_dirs'] = ['../..','../extern']
+import os
+include = os.path.join(os.path.dirname(self.filename),'../..')
+cfg['include_dirs'] = [include, f'{include}/willutil_cpp/extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['../util/types.hpp']
 
-cfg['parallel'] = False
+cfg['parallel'] = True
 
 
 setup_pybind11(cfg)
@@ -38,10 +40,8 @@ namespace cookie_cutter {
 
 using namespace Eigen;
 
-template <typename F>
-using Vx = Matrix<F, 1, Dynamic>;
-template <typename F>
-using RowMatrixX = Matrix<F, Dynamic, Dynamic, RowMajor>;
+template <typename F> using Vx = Matrix<F, 1, Dynamic>;
+template <typename F> using RowMatrixX = Matrix<F, Dynamic, Dynamic, RowMajor>;
 
 template <typename F>
 py::tuple cookie_cutter(Ref<RowMatrixX<F>> pts, F thresh) {
@@ -54,7 +54,7 @@ py::tuple cookie_cutter(Ref<RowMatrixX<F>> pts, F thresh) {
 
     for (int i = 0; i < pts.rows(); ++i) {
       int seenit = -1;
-      for (auto& keeper : keep) {
+      for (auto &keeper : keep) {
         Vx<F> delta = pts.row(i) - keeper.first;
         F d2 = delta.squaredNorm();
         if (d2 <= thresh * thresh) {
@@ -83,6 +83,6 @@ PYBIND11_MODULE(cookie_cutter, m) {
   m.def("cookie_cutter", &cookie_cutter<float>);
 }
 
-}  // namespace cookie_cutter
-}  // namespace cluster
-}  // namespace rpxdock
+} // namespace cookie_cutter
+} // namespace cluster
+} // namespace rpxdock
