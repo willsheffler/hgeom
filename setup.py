@@ -30,7 +30,7 @@ for e in ext_modules:
     # e.extra_compile_args += ['-w']
     e.extra_compile_args += ['-std=c++17', '-O3', '-march=native', '-fPIC', '-w']
 
-# ParallelCompile("NPY_NUM_BUILD_JOBS", default=8).install()
+ParallelCompile("NPY_NUM_BUILD_JOBS", default=8).install()
 
 setup(
     name='willutil_cpp',
@@ -42,8 +42,8 @@ setup(
     packages=find_packages(include=['willutil_cpp', 'willutil_cpp.*']),
     test_suite='pytest',
     tests_require=['pytest'],
-    setup_requires=['pybind11', 'numpy', 'icecream'],
-    install_requires=['pybind11', 'numpy', 'icecream'],
+    setup_requires=['pybind11', 'numpy', 'icecream', 'cppimport'],
+    install_requires=['pybind11', 'numpy', 'icecream', 'cppimport'],
     cmdclass={
         "build_ext": build_ext,
         'install': install

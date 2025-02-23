@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..', '../extern']
+cfg['include_dirs'] = ['../..', '../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['../extern/miniball/Seb.h',
 '../extern/miniball/Seb-inl.h', '../util/Timer.hpp']
@@ -69,7 +69,8 @@ bool miniball_test(int n = 1000, int d = 7, bool on_boundary = false) {
     if (on_boundary) {
       const double Wiggle = 1e-2;
       len = 1 / (std::sqrt(len) + Wiggle * rand() / RAND_MAX);
-      for (int j = 0; j < d; ++j) coords[j] *= len;
+      for (int j = 0; j < d; ++j)
+        coords[j] *= len;
     }
     S.push_back(Point(d, coords.begin()));
   }
@@ -90,7 +91,8 @@ bool miniball_test(int n = 1000, int d = 7, bool on_boundary = false) {
   Mxd ecrd(n, d);
   EigenPointAccessor pa(ecrd);
   for (int i = 0; i < n; ++i)
-    for (int j = 0; j < d; ++j) pa[i][j] = S[i][j];
+    for (int j = 0; j < d; ++j)
+      pa[i][j] = S[i][j];
   util::Timer t2;
   MiniballHack mbhack(d, pa);
   t2.stop();
@@ -104,7 +106,8 @@ bool miniball_test(int n = 1000, int d = 7, bool on_boundary = false) {
   // cout << "=====================================================" << endl;
 
   ASSERT_DOUBLE_EQ(rad, rad2)
-  for (int j = 0; j < d; ++j) ASSERT_DOUBLE_EQ(center_it[j], center2_it[j])
+  for (int j = 0; j < d; ++j)
+    ASSERT_DOUBLE_EQ(center_it[j], center2_it[j])
 
   cout << "Running time ratio: " << t.elapsed() / t2.elapsed() << endl;
 
@@ -116,6 +119,6 @@ PYBIND11_MODULE(miniball, m) {
   m.def("miniball", &miniball, py::call_guard<py::gil_scoped_release>());
 }
 
-}  // namespace miniball_test
-}  // namespace geom
-}  // namespace willutil_cpp
+} // namespace miniball_test
+} // namespace geom
+} // namespace willutil_cpp

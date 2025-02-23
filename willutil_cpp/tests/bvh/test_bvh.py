@@ -1153,7 +1153,6 @@ def test_bvh_threading_mindist_may_fail():
 if __name__ == "__main__":
 
     test_collect_pairs_range_sym()
-    assert 0
     test_bvh_isect_cpp()
     test_bvh_isect_fixed()
     test_bvh_isect()

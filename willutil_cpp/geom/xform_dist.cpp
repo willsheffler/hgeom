@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..', '../extern']
+cfg['include_dirs'] = ['../..', '../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['../extern/miniball/Seb.h',
 '../extern/miniball/Seb-inl.h', '../util/Timer.hpp']
@@ -66,6 +66,6 @@ PYBIND11_MODULE(xform_dist, m) {
   m.def("xform_dist2_split", &xform_dist2_split<double>);
 }
 
-}  // namespace xform_dist
-}  // namespace geom
-}  // namespace willutil_cpp
+} // namespace xform_dist
+} // namespace geom
+} // namespace willutil_cpp

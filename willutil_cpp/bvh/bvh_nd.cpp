@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..','../extern']
+cfg['include_dirs'] = ['../..','../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['../geom/primitive.hpp','../util/assertions.hpp',
 '../util/global_rng.hpp', 'bvh.hpp', 'bvh_algo.hpp', '../util/numeric.hpp']
@@ -39,8 +39,7 @@ namespace py = pybind11;
 
 namespace Eigen {
 
-template <class _Pt>
-struct PtIdxND {
+template <class _Pt> struct PtIdxND {
   using Pt = _Pt;
   PtIdxND() : pos(0), idx(0) {}
   PtIdxND(Pt v, int i = 0) : pos(v), idx(i) {}
@@ -48,25 +47,23 @@ struct PtIdxND {
   int idx;
 };
 template <class Pt>
-std::ostream& operator<<(std::ostream& out, PtIdxND<Pt> const& pi) {
+std::ostream &operator<<(std::ostream &out, PtIdxND<Pt> const &pi) {
   out << pi.idx << " " << pi.pos.transpose();
   return out;
 }
 
-template <typename F, int N>
-auto bounding_vol(PtIdxND<Matrix<F, N, 1>> v) {
+template <typename F, int N> auto bounding_vol(PtIdxND<Matrix<F, N, 1>> v) {
   auto s = SphereND<F, N>(v.pos);
   s.lb = s.ub = v.idx;
   return s;
 }
 
-}  // namespace Eigen
+} // namespace Eigen
 
 namespace willutil_cpp {
 namespace bvh {
 
-template <typename F, int DIM>
-struct BoundingSphereND {
+template <typename F, int DIM> struct BoundingSphereND {
   static SphereND<F, DIM> bound(auto pts) {
     using Vn = Matrix<F, DIM, 1>;
     using Miniball =
@@ -75,7 +72,8 @@ struct BoundingSphereND {
     SphereND<F, DIM> out;
     out.rad = mb.radius();
     auto cen_it = mb.center_begin();
-    for (int i = 0; i < DIM; ++i) out.cen[i] = cen_it[i];
+    for (int i = 0; i < DIM; ++i)
+      out.cen[i] = cen_it[i];
     return out;
   }
 };
@@ -84,8 +82,7 @@ template <typename F, int DIM>
 using BVH = SphereBVH<F, PtIdxND<Matrix<F, DIM, 1>>, DIM, SphereND<F, DIM>,
                       BoundingSphereND<F, DIM>>;
 
-template <typename F, int DIM>
-struct BVBVIsectND {
+template <typename F, int DIM> struct BVBVIsectND {
   using Sph = SphereND<F, DIM>;
   using Obj = PtIdxND<Matrix<F, DIM, 1>>;
   BVBVIsectND(F r) : rad(r), rad2(r * r) {}
@@ -105,26 +102,26 @@ struct BVBVIsectND {
   bool result = false;
 };
 template <typename F, int DIM>
-bool bvh_bvh_isect(BVH<F, DIM>& bvh1, BVH<F, DIM>& bvh2, F thresh) {
+bool bvh_bvh_isect(BVH<F, DIM> &bvh1, BVH<F, DIM> &bvh2, F thresh) {
   py::gil_scoped_release release;
   BVBVIsectND<F, DIM> query(thresh);
   willutil_cpp::bvh::BVIntersect(bvh1, bvh2, query);
   return query.result;
 }
 template <typename F, int DIM>
-bool bvh_bvh_isect_naive(BVH<F, DIM>& bvh1, BVH<F, DIM>& bvh2, F thresh) {
+bool bvh_bvh_isect_naive(BVH<F, DIM> &bvh1, BVH<F, DIM> &bvh2, F thresh) {
   F dist2 = thresh * thresh;
   for (auto o1 : bvh1.objs) {
     for (auto o2 : bvh2.objs) {
       auto d2 = (o1.pos - o2.pos).squaredNorm();
-      if (d2 < dist2) return true;
+      if (d2 < dist2)
+        return true;
     }
   }
   return false;
 }
 
-template <typename F, int DIM>
-struct BVMinDistND {
+template <typename F, int DIM> struct BVMinDistND {
   using Scalar = F;
   using Sph = SphereND<F, DIM>;
   using Obj = PtIdxND<Matrix<F, DIM, 1>>;
@@ -143,7 +140,7 @@ struct BVMinDistND {
   }
 };
 template <typename F, int DIM>
-py::tuple bvh_mindist(BVH<F, DIM>& bvh, RefMxd pts) {
+py::tuple bvh_mindist(BVH<F, DIM> &bvh, RefMxd pts) {
   auto outm = std::make_unique<Vxd>();
   auto outi = std::make_unique<Vxi>();
 
@@ -163,7 +160,7 @@ py::tuple bvh_mindist(BVH<F, DIM>& bvh, RefMxd pts) {
   return py::make_tuple(*outm, *outi);
 }
 template <typename F, int DIM>
-py::tuple bvh_mindist_naive(BVH<F, DIM>& bvh, RefMxd pts) {
+py::tuple bvh_mindist_naive(BVH<F, DIM> &bvh, RefMxd pts) {
   Vxd outm(pts.rows());
   Vxi outi(pts.rows());
   // int64_t ncmp = 0;
@@ -184,8 +181,7 @@ py::tuple bvh_mindist_naive(BVH<F, DIM>& bvh, RefMxd pts) {
   return py::make_tuple(outm, outi);
 }
 
-template <typename F, int DIM>
-struct BVIsectND {
+template <typename F, int DIM> struct BVIsectND {
   using Sph = SphereND<F, DIM>;
   using Obj = PtIdxND<Matrix<F, DIM, 1>>;
   Matrix<F, DIM, 1> pt;
@@ -203,7 +199,7 @@ struct BVIsectND {
   }
 };
 template <typename F, int DIM>
-Vxi bvh_isect(BVH<F, DIM>& bvh, RefMxd pts, F mindist) {
+Vxi bvh_isect(BVH<F, DIM> &bvh, RefMxd pts, F mindist) {
   py::gil_scoped_release release;
   Vxi out(pts.rows());
   for (int i = 0; i < pts.rows(); ++i) {
@@ -214,7 +210,7 @@ Vxi bvh_isect(BVH<F, DIM>& bvh, RefMxd pts, F mindist) {
   return out;
 }
 template <typename F, int DIM>
-Vxi bvh_isect_naive(BVH<F, DIM>& bvh, RefMxd pts, F mindist) {
+Vxi bvh_isect_naive(BVH<F, DIM> &bvh, RefMxd pts, F mindist) {
   Vxi out(pts.rows());
   out.fill(-1);
   for (int i = 0; i < pts.rows(); ++i) {
@@ -230,8 +226,7 @@ Vxi bvh_isect_naive(BVH<F, DIM>& bvh, RefMxd pts, F mindist) {
   return out;
 }
 
-template <typename F, int DIM>
-BVH<F, DIM> create_bvh_nd(RefMxd pts) {
+template <typename F, int DIM> BVH<F, DIM> create_bvh_nd(RefMxd pts) {
   if (pts.cols() != DIM)
     throw std::runtime_error("input must be shape (N,DIM)");
   py::gil_scoped_release release;
@@ -242,13 +237,13 @@ BVH<F, DIM> create_bvh_nd(RefMxd pts) {
   for (int i = 0; i < pts.rows(); ++i) {
     Pi pi;
     pi.idx = i;
-    for (int j = 0; j < DIM; ++j) pi.pos[j] = pts(i, j);
+    for (int j = 0; j < DIM; ++j)
+      pi.pos[j] = pts(i, j);
     objs.push_back(pi);
   }
   return BVH(objs.begin(), objs.end());
 }
-template <typename F, int DIM>
-BVH<F, DIM> create_bvh_quatplus(RefMxd pts) {
+template <typename F, int DIM> BVH<F, DIM> create_bvh_quatplus(RefMxd pts) {
   if (pts.cols() != DIM)
     throw std::runtime_error("quat input must be shape (N,4)");
   py::gil_scoped_release release;
@@ -259,42 +254,45 @@ BVH<F, DIM> create_bvh_quatplus(RefMxd pts) {
   for (int i = 0; i < pts.rows(); ++i) {
     Pi pi;
     pi.idx = i;
-    for (int j = 0; j < DIM; ++j) pi.pos[j] = pts(i, j);
+    for (int j = 0; j < DIM; ++j)
+      pi.pos[j] = pts(i, j);
     objs.push_back(pi);
-    for (int j = 0; j < 4; ++j) pi.pos[j] = -pi.pos[j];
+    for (int j = 0; j < 4; ++j)
+      pi.pos[j] = -pi.pos[j];
     objs.push_back(pi);
   }
   return BVH(objs.begin(), objs.end());
 }
 
 template <typename BVH>
-Matrix<typename BVH::F, Dynamic, BVH::DIM> bvh_obj_centers(BVH& b) {
+Matrix<typename BVH::F, Dynamic, BVH::DIM> bvh_obj_centers(BVH &b) {
   py::gil_scoped_release release;
   int n = b.objs.size();
   Matrix<typename BVH::F, Dynamic, BVH::DIM> out(n, BVH::DIM);
   for (int i = 0; i < n; ++i)
-    for (int j = 0; j < BVH::DIM; ++j) out(i, j) = b.objs[i].pos[j];
+    for (int j = 0; j < BVH::DIM; ++j)
+      out(i, j) = b.objs[i].pos[j];
   return out;
 }
 template <typename BVH>
-Matrix<typename BVH::F, BVH::DIM, 1> bvh_obj_com(BVH& b) {
+Matrix<typename BVH::F, BVH::DIM, 1> bvh_obj_com(BVH &b) {
   py::gil_scoped_release release;
   typename BVH::Object::Pt com;
   com.fill(0);
   int n = b.objs.size();
   for (int i = 0; i < n; ++i)
-    for (int j = 0; j < BVH::DIM; ++j) com[j] += b.objs[i].pos[j];
+    for (int j = 0; j < BVH::DIM; ++j)
+      com[j] += b.objs[i].pos[j];
   com /= n;
   return com;
 }
 
-template <typename F, int DIM>
-void bind_bvh_ND(auto m, std::string name) {
+template <typename F, int DIM> void bind_bvh_ND(auto m, std::string name) {
   using BVH = BVH<F, DIM>;
   py::class_<BVH>(m, name.c_str())
-      .def("__len__", [](BVH& b) { return b.objs.size(); })
-      .def("radius", [](BVH& b) { return b.vols[b.getRootIndex()].rad; })
-      .def("center", [](BVH& b) { return b.vols[b.getRootIndex()].cen; })
+      .def("__len__", [](BVH &b) { return b.objs.size(); })
+      .def("radius", [](BVH &b) { return b.vols[b.getRootIndex()].rad; })
+      .def("center", [](BVH &b) { return b.vols[b.getRootIndex()].cen; })
       .def("centers", &bvh_obj_centers<BVH>)
       .def("com", &bvh_obj_com<BVH>)
       /**/;
@@ -317,5 +315,5 @@ PYBIND11_MODULE(bvh_nd, m) {
   m.def("bvh_mindist4d", &bvh_mindist<double, 4>);
   m.def("bvh_mindist4d_naive", &bvh_mindist_naive<double, 4>);
 }
-}  // namespace bvh
-}  // namespace willutil_cpp
+} // namespace bvh
+} // namespace willutil_cpp

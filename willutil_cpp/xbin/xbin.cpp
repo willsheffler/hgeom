@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..','../extern']
+cfg['include_dirs'] = ['../..','../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['../geom/bcc.hpp','../util/assertions.hpp',
 '../util/global_rng.hpp', 'xbin.hpp', '../util/numeric.hpp',
@@ -43,8 +43,7 @@ namespace xbin {
 using namespace phmap;
 
 using namespace util;
-template <typename F, typename K>
-using Xbin = XformHash_bt24_BCC6<X3<F>, K>;
+template <typename F, typename K> using Xbin = XformHash_bt24_BCC6<X3<F>, K>;
 
 template <typename F, typename K>
 py::array_t<F> _bincen_of(Xbin<F, K> const &binner, RefVx<K> keys) {
@@ -110,7 +109,8 @@ Vx<K> key_of_pairs(Xbin<F, K> const &xb, py::array xp, py::array x1,
   check_xform_array(x1);
   check_xform_array(x2);
   pybind11::array::ensure(xp);
-  if (!xp) throw std::runtime_error("bad array");
+  if (!xp)
+    throw std::runtime_error("bad array");
   if (xp.ndim() != 2 || xp.shape()[1] != 2)
     throw std::runtime_error("array must be shape (N,2)");
   size_t sp = xp.itemsize(), sx1 = x1.itemsize(), sx2 = x2.itemsize();
@@ -156,8 +156,10 @@ Vx<K> key_of_selected_pairs(Xbin<F, K> const &xb, py::array i1, py::array i2,
   pybind11::array::ensure(i2);
   size_t sp = i1.itemsize();
 
-  if (!i1) throw std::runtime_error("bad array");
-  if (!i2) throw std::runtime_error("bad array");
+  if (!i1)
+    throw std::runtime_error("bad array");
+  if (!i2)
+    throw std::runtime_error("bad array");
   if (i1.ndim() != 1 || i2.ndim() != 1 || i1.size() != i2.size())
     throw std::runtime_error("index must be shape (N,) and same length");
   if (i1.dtype().kind() != i2.dtype().kind())
@@ -208,7 +210,8 @@ Vx<K> key_of_selected_pairs_onearray(Xbin<F, K> const &xb, py::array idx,
   pybind11::array::ensure(idx);
   size_t sp = idx.itemsize();
 
-  if (!idx) throw std::runtime_error("bad array");
+  if (!idx)
+    throw std::runtime_error("bad array");
   if (idx.ndim() != 2 || idx.shape()[1] != 2)
     throw std::runtime_error("index must be shape (N,2)");
   if (x1.dtype().kind() != x2.dtype().kind())
@@ -261,8 +264,10 @@ Vx<K> sskey_of_selected_pairs(Xbin<F, K> const &xb, py::array i1, py::array i2,
   pybind11::array::ensure(i2);
   size_t sp = i1.itemsize();
 
-  if (!i1) throw std::runtime_error("bad array");
-  if (!i2) throw std::runtime_error("bad array");
+  if (!i1)
+    throw std::runtime_error("bad array");
+  if (!i2)
+    throw std::runtime_error("bad array");
   if (i1.ndim() != 1 || i2.ndim() != 1 || i1.size() != i2.size())
     throw std::runtime_error("index must be shape (N,) and same length");
   if (i1.dtype().kind() != i2.dtype().kind())
@@ -315,7 +320,8 @@ Vx<K> sskey_of_selected_pairs_onearray(Xbin<F, K> const &xb, py::array idx,
   pybind11::array::ensure(idx);
   size_t sp = idx.itemsize();
 
-  if (!idx) throw std::runtime_error("bad array");
+  if (!idx)
+    throw std::runtime_error("bad array");
   if (idx.ndim() != 2 || idx.shape()[1] != 2)
     throw std::runtime_error("index must be shape (N,2)");
   if (x1.dtype().kind() != x2.dtype().kind())
@@ -375,7 +381,8 @@ Vx<V> ssmap_of_selected_pairs_onearray(Xbin<F, K> const &xb,
   pybind11::array::ensure(idx);
   size_t sp = idx.itemsize();
 
-  if (!idx) throw std::runtime_error("bad array");
+  if (!idx)
+    throw std::runtime_error("bad array");
   if (idx.ndim() != 2 || idx.shape()[1] != 2)
     throw std::runtime_error("index must be shape (N,2) and same length");
   if (x1.dtype().kind() != x2.dtype().kind())
@@ -432,7 +439,8 @@ Vx<V> map_of_selected_pairs_onearray(Xbin<F, K> const &xb,
   pybind11::array::ensure(idx);
   size_t sp = idx.itemsize();
 
-  if (!idx) throw std::runtime_error("bad array");
+  if (!idx)
+    throw std::runtime_error("bad array");
   if (idx.ndim() != 2 || idx.shape()[1] != 2)
     throw std::runtime_error("index must be shape (N,2) and same length");
   if (x1.dtype().kind() != x2.dtype().kind())
@@ -476,7 +484,8 @@ py::tuple xform_to_F6(Xbin<F, K> const &xbin, py::array_t<F> _xform) {
 
 template <typename F, typename K>
 py::array_t<F> F6_to_xform(Xbin<F, K> const &xbin, Mx<F> f6, Vx<K> cell) {
-  if (f6.cols() != 6) throw std::runtime_error("f6 must be shape(N,6)");
+  if (f6.cols() != 6)
+    throw std::runtime_error("f6 must be shape(N,6)");
   if (f6.rows() != cell.size())
     throw std::runtime_error("f6 and cell must have same length");
   auto out = std::make_unique<Vx<X3<F>>>();
@@ -515,12 +524,13 @@ void bind_xbin(py::module m, std::string name) {
                         a.cart_bound_ == b.cart_bound_;
                })
           .def(py::pickle(
-              [](const THIS &xbin) {  // __getstate__
+              [](const THIS &xbin) { // __getstate__
                 return py::make_tuple(xbin.cart_resl_, xbin.ori_nside_,
                                       xbin.cart_bound_);
               },
-              [](py::tuple t) {  // __setstate__
-                if (t.size() != 3) throw std::runtime_error("Invalid state!");
+              [](py::tuple t) { // __setstate__
+                if (t.size() != 3)
+                  throw std::runtime_error("Invalid state!");
                 return THIS(t[0].cast<F>(), t[1].cast<int>(), t[2].cast<F>());
               }))
 
@@ -540,5 +550,5 @@ PYBIND11_MODULE(xbin, m) {
   m.def("create_Xbin_nside_float", &create_Xbin_nside<float, K>);
 }
 
-}  // namespace xbin
-}  // namespace willutil_cpp
+} // namespace xbin
+} // namespace willutil_cpp

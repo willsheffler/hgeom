@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..','../extern']
+cfg['include_dirs'] = ['../..','../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w']
 cfg['dependencies'] = ['xbin.hpp', '../util/assertions.hpp',
 '../util/global_rng.hpp']
@@ -36,7 +36,7 @@ namespace xbin {
 namespace test {
 
 template <class F, int M, int O>
-void rand_xform(std::mt19937& rng, Eigen::Transform<F, 3, M, O>& x,
+void rand_xform(std::mt19937 &rng, Eigen::Transform<F, 3, M, O> &x,
                 float max_cart = 512.0f) {
   std::uniform_real_distribution<F> runif;
   std::normal_distribution<F> rnorm;
@@ -48,8 +48,7 @@ void rand_xform(std::mt19937& rng, Eigen::Transform<F, 3, M, O>& x,
                           runif(rng) * max_cart - max_cart / 2.0);
 }
 
-template <class F>
-X3<F> rand_xform(F max_cart = 512.0) {
+template <class F> X3<F> rand_xform(F max_cart = 512.0) {
   X3<F> x;
   rand_xform(global_rng(), x, max_cart);
   return x;
@@ -62,7 +61,7 @@ typedef Eigen::Transform<double, 3, Eigen::AffineCompact> Xform;
 // typedef Eigen::Affine3d Xform;
 
 template <template <class X> class XformHash>
-int get_num_ori_cells(int ori_nside, double& xcov) {
+int get_num_ori_cells(int ori_nside, double &xcov) {
   std::mt19937 rng((unsigned int)time(0) + 7693487);
   XformHash<Xform> xh(1.0, ori_nside, 512.0);
   int n_ori_bins;
@@ -97,7 +96,8 @@ bool xform_hash_perf_test(double cart_resl, double ang_resl,
 
   std::vector<Xform> samples(N2), centers(N2);
 
-  for (int i = 0; i < N2; ++i) rand_xform(rng, samples[i], 512.0);
+  for (int i = 0; i < N2; ++i)
+    rand_xform(rng, samples[i], 512.0);
 
   util::Timer tk;
   std::vector<uint64_t> keys(N2);
@@ -109,19 +109,22 @@ bool xform_hash_perf_test(double cart_resl, double ang_resl,
   time_key += (double)tk.elapsed_nano();
 
   util::Timer tc;
-  for (int i = 0; i < N2; ++i) centers[i] = xh.get_center(keys[i]);
+  for (int i = 0; i < N2; ++i)
+    centers[i] = xh.get_center(keys[i]);
   time_cen += (double)tc.elapsed_nano();
 
   std::unordered_set<size_t> idx_seen;
   // idx_seen.set_empty_key(std::numeric_limits<uint64_t>::max());
-  for (int i = 0; i < N2; ++i) idx_seen.insert(keys[i]);
+  for (int i = 0; i < N2; ++i)
+    idx_seen.insert(keys[i]);
 
   double covrad = 0, max_dt = 0, max_da = 0;
   for (int i = 0; i < N2; ++i) {
     Xform l = centers[i].inverse() * samples[i];
     double dt = l.translation().norm();
     Eigen::Matrix3d m;
-    for (int k = 0; k < 9; ++k) m.data()[k] = l.data()[k];
+    for (int k = 0; k < 9; ++k)
+      m.data()[k] = l.data()[k];
     // cout << m << endl;
     // cout << l.rotation() << endl;
     double da = Eigen::AngleAxisd(m).angle() * 180.0 / M_PI;
@@ -178,6 +181,6 @@ PYBIND11_MODULE(xbin_test, m) {
         &TEST_XformHash_XformHash_bt24_BCC6);
 }
 
-}  // namespace test
-}  // namespace xbin
-}  // namespace willutil_cpp
+} // namespace test
+} // namespace xbin
+} // namespace willutil_cpp

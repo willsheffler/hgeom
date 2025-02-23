@@ -1,0 +1,6 @@
+.eggs
+*.egg-info
+/build
+*.sublime-workspace
+sublime_build.log
+

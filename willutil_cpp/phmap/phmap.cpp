@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..','../extern']
+cfg['include_dirs'] = ['../..','../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['phmap.hpp']
 
@@ -42,7 +42,8 @@ template <typename K, typename V>
 Vx<V> PHMap_get(PHMap<K, V> const &phmap, RefVx<K> keys) {
   py::gil_scoped_release release;
   Vx<V> out(keys.size());
-  for (size_t i = 0; i < keys.size(); i++) out[i] = phmap.get_default(keys[i]);
+  for (size_t i = 0; i < keys.size(); i++)
+    out[i] = phmap.get_default(keys[i]);
   return out;
 }
 template <typename K, typename V>
@@ -72,14 +73,16 @@ void PHMap_set_single_single(PHMap<K, V> &phmap, K key, V val) {
 template <typename K, typename V>
 void PHMap_del(PHMap<K, V> &phmap, RefVx<K> keys) {
   py::gil_scoped_release release;
-  for (size_t idx = 0; idx < keys.size(); idx++) phmap.phmap_.erase(keys[idx]);
+  for (size_t idx = 0; idx < keys.size(); idx++)
+    phmap.phmap_.erase(keys[idx]);
 }
 
 template <typename K, typename V>
 Vx<bool> PHMap_has(PHMap<K, V> &phmap, RefVx<K> keys) {
   py::gil_scoped_release release;
   Vx<bool> out(keys.size());
-  for (size_t i = 0; i < keys.size(); i++) out[i] = phmap.has(keys[i]);
+  for (size_t i = 0; i < keys.size(); i++)
+    out[i] = phmap.has(keys[i]);
 
   return out;
 }
@@ -88,7 +91,8 @@ template <typename K, typename V>
 bool PHMap_contains(PHMap<K, V> &phmap, Vx<K> keys) {
   py::gil_scoped_release release;
   for (size_t i = 0; i < keys.size(); i++)
-    if (!phmap.has(keys[i])) return false;
+    if (!phmap.has(keys[i]))
+      return false;
   return true;
 }
 template <typename K, typename V>
@@ -103,7 +107,8 @@ py::tuple PHMap_items_array(PHMap<K, V> const &phmap, int n = -1) {
   auto vals = std::make_unique<Vx<V>>();
   {
     py::gil_scoped_release release;
-    if (n < 0) n = phmap.size();
+    if (n < 0)
+      n = phmap.size();
     n = std::min<int>(n, phmap.size());
 
     keys->resize(n);
@@ -112,7 +117,8 @@ py::tuple PHMap_items_array(PHMap<K, V> const &phmap, int n = -1) {
     for (auto [k, v] : phmap.phmap_) {
       (*keys)[i] = k;
       (*vals)[i] = v;
-      if (++i == n) break;
+      if (++i == n)
+        break;
     }
   }
   return py::make_tuple(*keys, *vals);
@@ -120,13 +126,15 @@ py::tuple PHMap_items_array(PHMap<K, V> const &phmap, int n = -1) {
 template <typename K, typename V>
 Vx<K> PHMap_keys(PHMap<K, V> const &phmap, int nkey = -1) {
   py::gil_scoped_release release;
-  if (nkey < 0) nkey = phmap.size();
+  if (nkey < 0)
+    nkey = phmap.size();
   nkey = std::min<int>(nkey, phmap.size());
   Vx<K> keys(nkey);
   int i = 0;
   for (auto [k, v] : phmap.phmap_) {
     keys[i] = k;
-    if (++i == nkey) break;
+    if (++i == nkey)
+      break;
   }
   return keys;
 }
@@ -134,12 +142,16 @@ Vx<K> PHMap_keys(PHMap<K, V> const &phmap, int nkey = -1) {
 template <typename K, typename V>
 bool PHMap_eq(PHMap<K, V> const &a, PHMap<K, V> const &b) {
   py::gil_scoped_release release;
-  if (a.size() != b.size()) return false;
-  if (a.default_ != b.default_) return false;
+  if (a.size() != b.size())
+    return false;
+  if (a.default_ != b.default_)
+    return false;
   for (auto [k, v] : a.phmap_) {
     auto it = b.phmap_.find(k);
-    if (it == b.phmap_.end()) return false;
-    if (it->second != v) return false;
+    if (it == b.phmap_.end())
+      return false;
+    if (it->second != v)
+      return false;
   }
   return true;
 }
@@ -171,13 +183,13 @@ void bind_phmap(const py::module &m, std::string name) {
           },
           py::keep_alive<0, 1>())
       .def(py::pickle(
-          [](THIS const &map) {  // __getstate__
+          [](THIS const &map) { // __getstate__
             py::tuple tup = PHMap_items_array(map);
             auto keys = tup[0].cast<Vx<K>>();
             auto vals = tup[1].cast<Vx<V>>();
             return py::make_tuple(keys, vals, map.default_);
           },
-          [](py::tuple t) {  // __setstate__
+          [](py::tuple t) { // __setstate__
             if (t.size() != 2 && t.size() != 3)
               throw std::runtime_error("Invalid state!");
             V v0 = (t.size() == 3) ? t[2].cast<V>() : 0;
@@ -200,5 +212,5 @@ PYBIND11_MODULE(phmap, m) {
   m.def("test_mod_phmap_inplace", &test_mod_phmap_inplace<uint64_t, uint64_t>);
 }
 
-}  // namespace phmap
-}  // namespace willutil_cpp
+} // namespace phmap
+} // namespace willutil_cpp

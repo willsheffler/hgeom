@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..','../extern']
+cfg['include_dirs'] = ['../..','../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = ['bcc.hpp']
 
@@ -32,12 +32,11 @@ namespace geom {
 using namespace Eigen;
 using namespace util;
 
-template <typename K>
-struct MyIter {
-  std::vector<std::pair<K, K>>& vals;
-  MyIter(std::vector<std::pair<K, K>>& v) : vals(v) {}
-  MyIter<K>& operator++(int) { return *this; }
-  MyIter<K>& operator*() { return *this; }
+template <typename K> struct MyIter {
+  std::vector<std::pair<K, K>> &vals;
+  MyIter(std::vector<std::pair<K, K>> &v) : vals(v) {}
+  MyIter<K> &operator++(int) { return *this; }
+  MyIter<K> &operator*() { return *this; }
   void operator=(std::pair<K, K> kk) { vals.push_back(kk); }
 };
 
@@ -107,18 +106,20 @@ struct MyIter {
 // }
 
 template <int DIM, typename F, typename K>
-Mx<F> BCC_getvals(BCC<DIM, F, K>& bcc, RefVx<K> keys) {
+Mx<F> BCC_getvals(BCC<DIM, F, K> &bcc, RefVx<K> keys) {
   py::gil_scoped_release release;
   Mx<F> out(keys.size(), DIM);
-  for (int i = 0; i < keys.rows(); ++i) out.row(i) = bcc[keys[i]];
+  for (int i = 0; i < keys.rows(); ++i)
+    out.row(i) = bcc[keys[i]];
   return out;
 }
 
 template <int DIM, typename F, typename K>
-Vx<K> BCC_getkeys(BCC<DIM, F, K>& bcc, RefMx<F> vals) {
+Vx<K> BCC_getkeys(BCC<DIM, F, K> &bcc, RefMx<F> vals) {
   py::gil_scoped_release release;
   Vx<K> out(vals.rows());
-  for (int i = 0; i < vals.rows(); ++i) out[i] = bcc[vals.row(i)];
+  for (int i = 0; i < vals.rows(); ++i)
+    out[i] = bcc[vals.row(i)];
   return out;
 }
 
@@ -168,5 +169,5 @@ PYBIND11_MODULE(bcc, m) {
   bind_bcc<6, float, uint64_t>(m, "BCC6_float");
   /**/
 }
-}  // namespace geom
-}  // namespace willutil_cpp
+} // namespace geom
+} // namespace willutil_cpp

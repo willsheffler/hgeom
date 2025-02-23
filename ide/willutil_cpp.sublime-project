@@ -1,0 +1,40 @@
+{
+    "folders":
+    [
+        {
+            "path": "..",
+            "folder_exclude_patterns":
+            [
+                "Eigen"
+            ]
+        }
+    ],
+    "settings":
+     {
+        "PyYapf":{
+         "yapf_command": "yapf",
+         "on_save": false
+         // "yapf_command": "/home/sheffler/src/willutil/willutil/app/codealign",
+        },
+        "project_environment": {
+            "env": {
+                "PYTHON": "/home/sheffler/sw/MambaForge/envs/wu/bin/python",
+                // "PYTHON": "/home/sheffler/sw/MambaForge/envs/wu/bin/python",
+                "QT_QPA_PLATFORM": "xcb"
+            }
+        }
+    },
+    "build_systems":
+    [
+        {
+            "name": "pytest all",
+            "shell_cmd": "cd $folder; PYTHONPATH=. \\$PYTHON -m pytest willutil_cpp/tests  2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
+            "name": "ipd runtestfile",
+            "shell_cmd": "cd $folder; PYTHONPATH=.  \\$PYTHON -m ipd.tools.run_tests_on_file willutil_cpp willutil_cpp/tests/bvh/bvh.cpp 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        }
+    ]
+}

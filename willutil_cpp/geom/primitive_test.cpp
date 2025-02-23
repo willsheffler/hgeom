@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..','../extern']
+cfg['include_dirs'] = ['../..','../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w']
 cfg['dependencies'] = ['primitive.hpp','../util/assertions.hpp',
 '../util/global_rng.hpp','../util/types.hpp']
@@ -28,8 +28,7 @@ using namespace willutil_cpp::geom;
 using namespace willutil_cpp::util;
 using willutil_cpp::util::global_rng;
 
-template <class F>
-bool geom_primitive_sphere_test(int niter) {
+template <class F> bool geom_primitive_sphere_test(int niter) {
   using Sph = Sphere<F>;
   using Vec = V3<F>;
   using S = Sph;
@@ -102,7 +101,8 @@ bool geom_primitive_welzl_test(size_t Ntest, size_t Npoints) {
   F avgvolratio = 0;
   for (size_t i = 0; i < Ntest; ++i) {
     std::vector<Vec> points;
-    for (size_t k = 0; k < Npoints; ++k) points.push_back(10 * Vec::Random());
+    for (size_t k = 0; k < Npoints; ++k)
+      points.push_back(10 * Vec::Random());
     Sph aprox_bv = central_bounding_sphere(points);
     Sph welzl_bv = welzl_bounding_sphere(points);
     ASSERT_GE(aprox_bv.rad, welzl_bv.rad);
@@ -131,4 +131,4 @@ PYBIND11_MODULE(primitive_test, m) {
         &TEST_geom_primitive_welzl_bounding_sphere);
 }
 
-}  // namespace rif_geom_prim_test
+} // namespace rif_geom_prim_test

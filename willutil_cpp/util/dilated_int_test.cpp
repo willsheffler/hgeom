@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..']
+cfg['include_dirs'] = ['../..']
 cfg['compiler_args'] = ['-std=c++17', '-w']
 cfg['dependencies'] = ['dilated_int.hpp']
 
@@ -30,8 +30,7 @@ namespace py = pybind11;
 namespace willutil_cpp {
 namespace util {
 
-template <uint64_t D>
-bool dilated_int_test() {
+template <uint64_t D> bool dilated_int_test() {
   uint64_t maxval = util::impl::MAX_DILATABLE<D>::VAL;
   maxval = std::min(maxval, uint64_t(2097151));
   for (uint64_t i(0); i < maxval; ++i) {
@@ -85,5 +84,5 @@ bool TEST_dilated_int_64bit() {
 PYBIND11_MODULE(dilated_int_test, m) {
   m.def("TEST_dilated_int_64bit", &TEST_dilated_int_64bit);
 }
-}  // namespace util
-}  // namespace willutil_cpp
+} // namespace util
+} // namespace willutil_cpp

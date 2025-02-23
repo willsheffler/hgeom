@@ -2,7 +2,7 @@
 <%
 
 
-cfg['include_dirs'] = ['../../..','../extern']
+cfg['include_dirs'] = ['../..','../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w']
 cfg['dependencies'] = ['../geom/primitive.hpp','../util/assertions.hpp',
 '../util/global_rng.hpp']
@@ -35,8 +35,7 @@ using namespace bvh;
 using F = double;
 
 namespace Eigen {
-template <class F>
-struct PtIdx {
+template <class F> struct PtIdx {
   PtIdx() : pos(0), idx(0) {}
   PtIdx(V3<F> v, int i = 0) : pos(v), idx(i) {}
   V3<F> pos;
@@ -46,13 +45,13 @@ auto bounding_vol(V3<float> v) { return Sphere<float>(v); }
 auto bounding_vol(V3<double> v) { return Sphere<double>(v); }
 auto bounding_vol(PtIdx<float> v) { return Sphere<float>(v.pos); }
 auto bounding_vol(PtIdx<double> v) { return Sphere<double>(v.pos); }
-}  // namespace Eigen
+} // namespace Eigen
 
 namespace rpxdock_geom_bvh_test {
 using PtIdxF = PtIdx<F>;
 
 template <class F, int M, int O>
-void rand_xform(std::mt19937& rng, Eigen::Transform<F, 3, M, O>& x,
+void rand_xform(std::mt19937 &rng, Eigen::Transform<F, 3, M, O> &x,
                 float max_cart = 512.0f) {
   std::uniform_real_distribution<F> runif;
   std::normal_distribution<F> rnorm;
@@ -64,8 +63,7 @@ void rand_xform(std::mt19937& rng, Eigen::Transform<F, 3, M, O>& x,
                           runif(rng) * max_cart - max_cart / 2.0);
 }
 
-template <class F>
-X3<F> rand_xform(F max_cart = 512.0) {
+template <class F> X3<F> rand_xform(F max_cart = 512.0) {
   X3<F> x;
   rand_xform(global_rng(), x, max_cart);
   return x;
@@ -100,7 +98,7 @@ bool TEST_bvh_test_min() {
   typedef std::vector<PtIdxF, aligned_allocator<PtIdxF>> StdVectorOfVector3d;
   StdVectorOfVector3d ptsA, ptsB;
   std::uniform_real_distribution<> r(0, 1);
-  std::mt19937& g(global_rng());
+  std::mt19937 &g(global_rng());
   for (F dx = 0.91; dx < 1.1; dx += 0.02) {
     StdVectorOfVector3d ptsA, ptsB;
     for (int i = 0; i < 100; ++i) {
@@ -123,7 +121,8 @@ bool TEST_bvh_test_min() {
     // bvh
     // move Pa by random X, set bXa in minimizer
     auto X = rand_xform(F(999));
-    for (auto& p : ptsA) p.pos = X * p.pos;
+    for (auto &p : ptsA)
+      p.pos = X * p.pos;
     minimizer.bXa = X;
 
     minimizer.reset();
@@ -183,7 +182,7 @@ struct PPIsect {
 bool TEST_bvh_test_isect() {
   typedef std::vector<PtIdxF, aligned_allocator<PtIdxF>> StdVectorOfVector3d;
   std::uniform_real_distribution<> r(0, 1);
-  std::mt19937& g(global_rng());
+  std::mt19937 &g(global_rng());
   F avg_ratio = 0.0;
   int niter = 0;
   for (F dx = 0.001 + 0.95; dx < 1.05; dx += 0.005) {
@@ -207,7 +206,8 @@ bool TEST_bvh_test_isect() {
           break;
         }
       }
-      if (bruteisect) break;
+      if (bruteisect)
+        break;
     }
     int brutecalls = query.calls;
     tbrute.stop();
@@ -217,8 +217,9 @@ bool TEST_bvh_test_isect() {
     query.reset();
 
     auto X = rand_xform(F(999));
-    for (auto& p : ptsA) p.pos = X * p.pos;
-    query.bXa = X;  // commenting this out should fail
+    for (auto &p : ptsA)
+      p.pos = X * p.pos;
+    query.bXa = X; // commenting this out should fail
 
     auto tcreate = Timer("tc");
     SphereBVH<F, PtIdxF> bvhA(ptsA.begin(), ptsA.end());
@@ -252,4 +253,4 @@ PYBIND11_MODULE(bvh_test, m) {
   m.def("TEST_bvh_test_isect", &TEST_bvh_test_isect);
 }
 
-}  // namespace rpxdock_geom_bvh_test
+} // namespace rpxdock_geom_bvh_test

@@ -1,6 +1,6 @@
 /*/*cppimport
 <%
-cfg['include_dirs'] = ['../../..', '../extern']
+cfg['include_dirs'] = ['../..', '../extern']
 cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = []
 cfg['parallel'] = False
@@ -44,7 +44,8 @@ py::tuple expand_xforms_rand(std::vector<py::array_t<F>> gen_in, int depth,
   std::mt19937 deterministic_rng = std::mt19937(0);
   using X = X3<F>;
   std::vector<X> gen;
-  for (auto g : gen_in) gen.push_back(xform_py_to_X3(g));
+  for (auto g : gen_in)
+    gen.push_back(xform_py_to_X3(g));
   xbin::XformHash_bt24_BCC6<X, uint64_t> binner(0.1654, 1.74597, 107.745);
   ::phmap::parallel_flat_hash_map<uint64_t, uint64_t> uniq_keys;
   Mx<X> frames(depth, ntrials);
@@ -57,14 +58,14 @@ py::tuple expand_xforms_rand(std::vector<py::array_t<F>> gen_in, int depth,
         xdelta = gen[randidx(deterministic_rng)];
       else
         xdelta = gen[randidx(global_rng())];
-      X& x = frames(idepth, itrial);
+      X &x = frames(idepth, itrial);
       x = idepth == 0 ? xdelta : xdelta * frames(idepth - 1, itrial);
       F dist2cen = (x.translation() - cen).squaredNorm();
       if (dist2cen > sqr(reset_radius_ratio) * sqr(radius)) {
-        x = frames(idepth / 2, itrial);  // reset to prior location in bounds
+        x = frames(idepth / 2, itrial); // reset to prior location in bounds
         continue;
       } else if (dist2cen > sqr(radius)) {
-        continue;  // out of bounds, don't record
+        continue; // out of bounds, don't record
       }
       // record frame
       int id = idepth * ntrials + itrial;
@@ -72,7 +73,7 @@ py::tuple expand_xforms_rand(std::vector<py::array_t<F>> gen_in, int depth,
     }
   }
   std::vector<X> frames_uniq_key;
-  for (auto& [k, v] : uniq_keys) {
+  for (auto &[k, v] : uniq_keys) {
     int idepth = v / ntrials;
     int itrial = v % ntrials;
     frames_uniq_key.push_back(frames(idepth, itrial));
@@ -85,13 +86,17 @@ py::tuple expand_xforms_rand(std::vector<py::array_t<F>> gen_in, int depth,
       auto y = frames_uniq_key[j];
       auto y2x = x * y.inverse();
       Matrix<F, 3, 3> m = y2x.linear();
-      if (y2x.translation().squaredNorm() > 0.0001) continue;
-      if (AngleAxis<F>(m).angle() < 0.0001) uniq = false;
+      if (y2x.translation().squaredNorm() > 0.0001)
+        continue;
+      if (AngleAxis<F>(m).angle() < 0.0001)
+        uniq = false;
     }
-    if (uniq) frames_uniq.push_back(x);
+    if (uniq)
+      frames_uniq.push_back(x);
   }
   Vx<X> ret(frames_uniq.size());
-  for (int i = 0; i < frames_uniq.size(); ++i) ret[i] = frames_uniq[i];
+  for (int i = 0; i < frames_uniq.size(); ++i)
+    ret[i] = frames_uniq[i];
   return py::make_tuple(xform_eigen_to_py(ret), 0);
 }
 
@@ -224,54 +229,68 @@ py::tuple expand_xforms_2gen_loop(X3<F> G1, X3<F> G2, int N = 5, F maxrad = 9e9,
                                                       // continue;
                                                     }
                                                   }
-                                                  if (1 >= N) goto DONE;
+                                                  if (1 >= N)
+                                                    goto DONE;
                                                 }
                                               }
-                                              if (2 >= N) goto DONE;
+                                              if (2 >= N)
+                                                goto DONE;
                                             }
                                           }
-                                          if (3 >= N) goto DONE;
+                                          if (3 >= N)
+                                            goto DONE;
                                         }
                                       }
-                                      if (4 >= N) goto DONE;
+                                      if (4 >= N)
+                                        goto DONE;
                                     }
                                   }
-                                  if (5 >= N) goto DONE;
+                                  if (5 >= N)
+                                    goto DONE;
                                 }
                               }
-                              if (6 >= N) goto DONE;
+                              if (6 >= N)
+                                goto DONE;
                             }
                           }
-                          if (7 >= N) goto DONE;
+                          if (7 >= N)
+                            goto DONE;
                         }
                       }
-                      if (8 >= N) goto DONE;
+                      if (8 >= N)
+                        goto DONE;
                     }
                   }
-                  if (9 >= N) goto DONE;
+                  if (9 >= N)
+                    goto DONE;
                 }
               }
-              if (10 >= N) goto DONE;
+              if (10 >= N)
+                goto DONE;
             }
           }
-          if (11 >= N) goto DONE;
+          if (11 >= N)
+            goto DONE;
         }
       }
-      if (12 >= N) goto DONE;
+      if (12 >= N)
+        goto DONE;
     }
   }
 DONE:
 
-  Vx<X3<F>> xuniq = Vx<X3<F>>(10000);  // reasonable maximum?
+  Vx<X3<F>> xuniq = Vx<X3<F>>(10000); // reasonable maximum?
   size_t n = 0;
   for (auto x : xbuf) {
-    if (x.translation().squaredNorm() > maxrad * maxrad) continue;
+    if (x.translation().squaredNorm() > maxrad * maxrad)
+      continue;
     bool redundant(false);
     for (size_t i = 0; i < n; ++i) {
       auto x2 = xuniq[i];
       auto cartdis = (x2.translation() - x.translation()).squaredNorm();
       auto oridis = (x2.linear() - x.linear()).squaredNorm();
-      if (cartdis < 1e-6 && oridis < 1e-6) redundant = true;
+      if (cartdis < 1e-6 && oridis < 1e-6)
+        redundant = true;
     }
     if (!redundant) {
       xuniq[n] = x;
@@ -287,7 +306,7 @@ DONE:
   auto ret = xform_eigen_to_py(xuniq, n);
 
   return py::make_tuple(ret, py::make_tuple((int)seenit.size(), count));
-}  // namespace willutil_cpp
+} // namespace willutil_cpp
 
 template <typename F>
 py::tuple expand_xforms_2gen_loop_pyarray(py::array_t<F> G1, py::array_t<F> G2,
@@ -298,17 +317,19 @@ py::tuple expand_xforms_2gen_loop_pyarray(py::array_t<F> G1, py::array_t<F> G2,
   return expand_xforms_2gen_loop(g1, g2, N, maxrad, maxrad_intermediate);
 }
 
-void print(int depth, std::unordered_set<uint64_t> const& seenit,
+void print(int depth, std::unordered_set<uint64_t> const &seenit,
            std::string msg, bool newline = 1) {
-  for (int i = 0; i < 6 - depth; ++i) cout << "  ";
+  for (int i = 0; i < 6 - depth; ++i)
+    cout << "  ";
   cout << seenit.size() << " " << msg;
-  if (newline) cout << endl;
+  if (newline)
+    cout << endl;
 }
 
 template <typename F, typename Binner>
-void expx(std::vector<X3<F>> generators, Binner& binner, F maxrad_sq, X3<F> pos,
-          int depth, Vx<X3<F>>& xbuf, std::unordered_set<uint64_t>& seenit,
-          int& count) {
+void expx(std::vector<X3<F>> generators, Binner &binner, F maxrad_sq, X3<F> pos,
+          int depth, Vx<X3<F>> &xbuf, std::unordered_set<uint64_t> &seenit,
+          int &count) {
   if (!depth) {
     // print(depth, seenit, "depth==0");
     return;
@@ -410,5 +431,5 @@ PYBIND11_MODULE(expand_xforms, m) {
         "deterministic"_a = true);
 }
 
-}  // namespace geom
-}  // namespace willutil_cpp
+} // namespace geom
+} // namespace willutil_cpp
