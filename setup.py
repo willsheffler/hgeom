@@ -1,7 +1,6 @@
-from glob import glob
 from setuptools import setup, find_packages
-from setuptools.command.install import install
-from pybind11.setup_helpers import Pybind11Extension, ParallelCompile, build_ext, intree_extensions
+# from setuptools.command.install import install
+# from pybind11.setup_helpers import Pybind11Extension, ParallelCompile, build_ext, intree_extensions
 
 # ext_modules = intree_extensions([
 #     'willutil_cpp/bvh/bvh.cpp',
@@ -44,10 +43,10 @@ setup(
     tests_require=['pytest'],
     setup_requires=['pybind11', 'numpy', 'icecream', 'cppimport'],
     install_requires=['pybind11', 'numpy', 'icecream', 'cppimport'],
-    cmdclass={
-        "build_ext": build_ext,
-        'install': install
-    },
+    # cmdclass={
+    # "build_ext": build_ext,
+    # 'install': install
+    # },
     # ext_modules=ext_modules,
     package_data={
         'willutil_cpp': [
