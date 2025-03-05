@@ -697,9 +697,9 @@ def test_collect_pairs_range_sym():
                     else:
                         if np.any(filt_pairs != rpairs):  # sketchy???
                             n_filtpairerr += 1
-                        if not np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1)):
-                            if itries > 0:
-                                assert np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1))
+                        if not np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1)) and itries > 0:
+                            assert np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1))
+
 
             # allow one off by one b/c it happens rarely and isn't worth fixing
             assert n_off_by_one <= 1
