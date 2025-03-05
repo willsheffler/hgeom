@@ -1,7 +1,7 @@
 import numpy as np
-from willutil_cpp.xbin import Xbin_double, Xbin_float
-import willutil_cpp.xbin.xbin_util as xu
-from willutil_cpp import phmap
+from willutil_cpp import Xbin_double, Xbin_float
+import willutil_cpp._xbin_util as xu
+import willutil_cpp as wu
 
 import willutil_cpp.homog as hm
 
@@ -47,7 +47,7 @@ def test_sskey_of_selected_pairs():
    assert np.all(kss == kss2)
 
 def test_ssmap_of_selected_pairs():
-   phm = phmap.PHMap_u8f8()
+   phm = wu.PHMap_u8f8()
    xb = Xbin_float()
    N = 10000
    N1, N2 = 100, 1000
@@ -75,7 +75,7 @@ def test_ssmap_of_selected_pairs():
    assert np.all(vals == phm[keys])
 
 def test_map_of_selected_pairs():
-   phm = phmap.PHMap_u8f8()
+   phm = wu.PHMap_u8f8()
    xb = Xbin_float()
    N = 10000
    N1, N2 = 100, 1000

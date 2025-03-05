@@ -34,8 +34,8 @@ def expand_xforms_rand(
    if cen == 'auto': cen = cen0
 
    # multiply out xforms and bin
-   binner = wu.xbin.Xbin(0.1654234, 1.74597824, 107)
-   phmap = wu.phmap.PHMap_u8u8()
+   binner = wu.Xbin(0.1654234, 1.74597824, 107)
+   phmap = wu.PHMap_u8u8()
 
    frames = np.zeros((depth, trials, 4, 4))
    frames[:, :, :, :] = np.eye(4)
@@ -57,7 +57,7 @@ def expand_xforms_rand(
 
    keep = list()
    for i, x in enumerate(unique_key_frames):
-      dist, ang = wu.geom.xform_dist2_split(x, unique_key_frames, 1.0)
+      dist, ang = wu.xform_dist2_split(x, unique_key_frames, 1.0)
       # print(i, dist, ang)
       if 1 == np.sum(np.sqrt(dist**2 + ang**2) < 0.0001):
          keep.append(x)
@@ -136,7 +136,7 @@ def _test_expand_xforms_various_count(expand_xforms_func, trials=3):
       assert len(frames) == 105, f"got: {len(frames)}"
 
 def test_expand_xforms_various_count_cpp(trials=3):
-   _test_expand_xforms_various_count(wu.geom.expand_xforms_rand, trials)
+   _test_expand_xforms_various_count(wu.expand_xforms_rand, trials)
 
 def _test_expand_xforms_various_count_py(trials=3):
    _test_expand_xforms_various_count(expand_xforms_rand, trials)
@@ -149,7 +149,7 @@ def do_test_expand_xforms(
    radius_intermediate=9e9,
    trials=1,
    showme=False,
-   expand_xforms_func=wu.geom.expand_xforms_rand,
+   expand_xforms_func=expand_xforms_rand,
 ):
 
    # for parallel testing, only do on the main thread
@@ -168,7 +168,7 @@ def do_test_expand_xforms(
    for _ in range(trials):
       x, idx = get_perm_xform(generators, nstep)
       if np.linalg.norm(x[:3, 3]) > radius: continue
-      c, o = wu.geom.xform_dist2_split(x, ex, 1.0)
+      c, o = wu.xform_dist2_split(x, ex, 1.0)
       if np.all((c > 0.001) + (o > 0.001)):
          if nmissing < 10:
             print('missing', idx)
@@ -219,7 +219,7 @@ def expand_xforms_radius():
       hm.hrot([0, 0, 1], 180.0, [10, 0, 0]),
    ])
 
-   x, _ = wu.geom.expand_xforms_rand(generators, depth=12, radius=radius, trials=100_000)
+   x, _ = wu.expand_xforms_rand(generators, depth=12, radius=radius, trials=100_000)
    ic(x.shape)
    wu.showme(x)
 

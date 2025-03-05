@@ -49,7 +49,7 @@ auto bounding_vol(PtIdx<float> v) { return Sphere<float>(v.pos); }
 auto bounding_vol(PtIdx<double> v) { return Sphere<double>(v.pos); }
 } // namespace Eigen
 
-namespace rpxdock_geom_bvh_test {
+namespace willutil_cpp_geom_bvh_test {
 using PtIdxF = PtIdx<F>;
 
 template <class F, int M, int O>
@@ -255,4 +255,4 @@ PYBIND11_MODULE(bvh_test, m) {
   m.def("TEST_bvh_test_isect", &TEST_bvh_test_isect);
 }
 
-} // namespace rpxdock_geom_bvh_test
+} // namespace willutil_cpp_geom_bvh_test

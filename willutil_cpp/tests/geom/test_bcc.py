@@ -1,4 +1,4 @@
-from willutil_cpp.geom.bcc import *
+from willutil_cpp import *
 
 # def test_bcc_neighbors_3():b
 #
@@ -98,7 +98,7 @@ from willutil_cpp.geom.bcc import *
 #          nb = bcc.neighbors_3(kcen, rad, extrahalf=0, sphere=1).astype("i8")
 #          cart = bcc[nb.astype("u8")]
 #
-#          # from rpxdock.io.io import dump_pdb_from_points
+#          # from willutil_cpp.io.io import dump_pdb_from_points
 #
 #          # cart2 = bcc[nbns.astype("u8")]
 #          # nbnse = bcc.neighbors_3(kcen, rad, extrahalf=1, sphere=0)

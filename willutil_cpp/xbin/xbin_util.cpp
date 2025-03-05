@@ -562,7 +562,7 @@ template <typename F, typename K> void bind_xbin_util(py::module m) {
         "pos1"_a = eye4, "pos2"_a = eye4);
 }
 
-PYBIND11_MODULE(xbin_util, m) {
+PYBIND11_MODULE(_xbin_util, m) {
   bind_xbin_util<double, uint64_t>(m);
   bind_xbin_util<float, uint64_t>(m);
 }

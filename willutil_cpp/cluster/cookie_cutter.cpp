@@ -26,14 +26,14 @@ setup_pybind11(cfg)
 
 namespace py = pybind11;
 
-namespace rpxdock {
+namespace willutil_cpp {
 /**
-\namespace rpxdock::cluster
+\namespace willutil_cpp::cluster
 \brief namespace for clustering stuff
 */
 namespace cluster {
 /**
-\namespace rpxdock::cluster::cookie_cutter
+\namespace willutil_cpp::cluster::cookie_cutter
 \brief namespace for cookie_cutter style clustering
 */
 namespace cookie_cutter {
@@ -78,11 +78,11 @@ py::tuple cookie_cutter(Ref<RowMatrixX<F>> pts, F thresh) {
   return py::make_tuple(out, clustid);
 }
 
-PYBIND11_MODULE(cookie_cutter, m) {
+PYBIND11_MODULE(_cookie_cutter, m) {
   m.def("cookie_cutter", &cookie_cutter<double>);
   m.def("cookie_cutter", &cookie_cutter<float>);
 }
 
 } // namespace cookie_cutter
 } // namespace cluster
-} // namespace rpxdock
+} // namespace willutil_cpp

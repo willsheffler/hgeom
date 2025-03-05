@@ -300,7 +300,7 @@ template <typename F, int DIM> void bind_bvh_ND(auto m, std::string name) {
       /**/;
 }
 
-PYBIND11_MODULE(bvh_nd, m) {
+PYBIND11_MODULE(_bvh_nd, m) {
   bind_bvh_ND<double, 7>(m, "SphereBVH7D");
   m.def("create_bvh7d", &create_bvh_nd<double, 7>);
   m.def("bvh_bvh_isect7d", &bvh_bvh_isect<double, 7>);

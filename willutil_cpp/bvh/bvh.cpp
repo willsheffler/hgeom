@@ -1049,6 +1049,7 @@ template <typename F> int bvh_print(BVH<F> &bvh) {
   for (auto o : bvh.objs) {
     py::print("BVH PT ", o.idx, o.pos.transpose());
   }
+  return 0;
 }
 
 template <typename F> py::array_t<F> bvh_obj_centers(BVH<F> &b) {
@@ -1132,8 +1133,7 @@ template <typename F> std::unique_ptr<BVH<F>> bvh_set_state(py::tuple state) {
   }
   return bvh;
 }
-
-template <typename F> void bind_bvh(auto m, std::string name) {
+template <typename F> void bind_bvh(pybind11::module_ m, std::string name) {
   py::class_<BVH<F>>(m, name.c_str())
       .def(py::init(&bvh_create<F>), "coords"_a, "which"_a = Vx<bool>(),
            "ids"_a = Vx<int>())
@@ -1154,8 +1154,8 @@ template <typename F> void bind_bvh(auto m, std::string name) {
       /**/;
 }
 
-PYBIND11_MODULE(bvh, m) {
-  // bind_bvh<float>(m, "SphereBVH_float");
+PYBIND11_MODULE(_bvh, m) {
+  bind_bvh<float>(m, "SphereBVH_float");
   bind_bvh<double>(m, "SphereBVH_double");
 
   m.def("bvh_min_dist", &bvh_min_dist<double>, "min pair distance", "bvh1"_a,

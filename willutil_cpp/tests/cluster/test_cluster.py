@@ -1,4 +1,4 @@
-from willutil_cpp.cluster import cookie_cutter
+from willutil_cpp import cookie_cutter
 # from scipy.spatial.distance import pdist
 import numpy as np
 

@@ -266,7 +266,7 @@ py::tuple qcp_rmsd_align_vec(py::array_t<F> const &a, RowMatrixX<F> const &b) {
   return py::make_tuple(pyrms, pyrot, pytrans);
 }
 
-PYBIND11_MODULE(qcp, m) {
+PYBIND11_MODULE(_qcp, m) {
   m.def("qcp_rms_float", &qcp_rmsd<float>, "xyz1"_a, "xyz2"_a);
   m.def("qcp_rms_vec_float", &qcp_rmsd_vec<float>, "xyz1"_a, "xyz2"_a);
   m.def("qcp_rms_align_vec_float", &qcp_rmsd_align_vec<float>, "xyz1"_a,

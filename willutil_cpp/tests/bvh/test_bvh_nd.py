@@ -1,6 +1,9 @@
 from time import perf_counter
 import numpy as np
-from willutil_cpp.bvh.bvh_nd import *
+
+import pytest
+pytest.importorskip('willutil_cpp.bvh_nd')
+from willutil_cpp.bvh_nd import *
 
 def test_bvh_bvh_isect7():
    nhit, ntot = 0, 0

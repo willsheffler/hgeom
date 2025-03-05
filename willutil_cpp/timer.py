@@ -6,7 +6,7 @@ import logging
 import functools
 import inspect
 import sys
-import _testcapi
+# import _testcapi
 import willutil_cpp as wu
 
 log = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def timed(func=None, *, label=None):
          val = func(*a, **kw)
       except:
          tp, exc, tb = sys.exc_info()
-         _testcapi.set_exc_info(tp, exc, tb.tb_next)
+         # _testcapi.set_exc_info(tp, exc, tb.tb_next)
          del tp, exc, tb
          raise
       checkpoint(kw, label, filename=filen, funcname=funcn)
