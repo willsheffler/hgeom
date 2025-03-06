@@ -191,7 +191,7 @@ def test_qcp_regions_junct():
          helper_test_qcp_regions(noffset=10, junct=j)
 
 def test_qcp_align(niter=20, npts=50):
-   for i in range(niter):
+   for _ in range(niter):
       pts1 = wu.homog.hrandpoint(npts)
       pts2 = wu.homog.hrandpoint(npts)
       pts1copy, pts2copy = pts1.copy(), pts2.copy()
