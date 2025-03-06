@@ -33,7 +33,7 @@ namespace phmap {
 using namespace util;
 
 template <typename K, typename V>
-void test_mod_phmap_inplace(PHMap<K, V> &phmap) {
+void mod_phmap_inplace_test(PHMap<K, V> &phmap) {
   for (auto &[k, v] : phmap.phmap_) {
     v = v * 2;
   }
@@ -205,13 +205,13 @@ void bind_phmap(const py::module &m, std::string name) {
       /**/;
 }
 
-PYBIND11_MODULE(phmap, m) {
+PYBIND11_MODULE(_phmap, m) {
   bind_phmap<uint32_t, float>(m, "PHMap_u4f4");
   bind_phmap<uint64_t, float>(m, "PHMap_u8f4");
   bind_phmap<uint64_t, double>(m, "PHMap_u8f8");
   bind_phmap<uint64_t, uint64_t>(m, "PHMap_u8u8");
 
-  m.def("test_mod_phmap_inplace", &test_mod_phmap_inplace<uint64_t, uint64_t>);
+  m.def("mod_phmap_inplace_test", &mod_phmap_inplace_test<uint64_t, uint64_t>);
 }
 
 } // namespace phmap

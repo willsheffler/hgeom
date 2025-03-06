@@ -116,8 +116,7 @@ struct BCC {
     return odd ? corner_indices : indices;
   }
 
-  template <typename Ary>
-  I get_index(Ary value) const noexcept {
+  template <typename Ary> I get_index(Ary value) const noexcept {
     bool odd;
     In indices = get_indices(value, odd);
     // std::cout << "bcc get_idx " << indices << " " << odd << std::endl;
@@ -126,8 +125,7 @@ struct BCC {
     // std::cout << "bcc get idx " << index << std::endl;
     return index;
   }
-  template <typename Ary>
-  I operator[](Ary value) const noexcept {
+  template <typename Ary> I operator[](Ary value) const noexcept {
     return get_index(value);
   }
 
@@ -267,13 +265,14 @@ struct BCC {
       // std::cout << indices << " " << i2 << std::endl;
       if ((indices < nside_).sum() == DIM)
         *iter++ = (nside_prefsum_ * indices).sum() << 1 | odd;
-      indices[i] += 1;  // reset
+      indices[i] += 1; // reset
     }
     odd = !odd;
     I sodd = odd ? -1 : 1;
     for (I i = 0; i < (1 << DIM); ++i) {
       In corner(indices);
-      for (int d = 0; d < DIM; ++d) corner[d] += ((i >> d) & 1) ? sodd : 0;
+      for (int d = 0; d < DIM; ++d)
+        corner[d] += ((i >> d) & 1) ? sodd : 0;
       // std::cout << corner << std::endl;
       if ((corner < nside_).sum() == DIM)
         *iter++ = (nside_prefsum_ * corner).sum() << 1 | odd;
@@ -283,19 +282,19 @@ struct BCC {
       for (I i = 0; i < DIM - 1; ++i) {
         for (I j = i + 1; j < DIM; ++j) {
           indices[i] += 1;
-          indices[j] += 1;  // +1,+1
+          indices[j] += 1; // +1,+1
           // std::cout << indices << " " << i1 << std::endl;
           if ((indices < nside_).sum() == DIM)
             *iter++ = (nside_prefsum_ * indices).sum() << 1 | odd;
-          indices[i] -= 2;  // -1,+1
+          indices[i] -= 2; // -1,+1
           // std::cout << indices << " " << i2 << std::endl;
           if ((indices < nside_).sum() == DIM)
             *iter++ = (nside_prefsum_ * indices).sum() << 1 | odd;
-          indices[j] -= 2;  // -1,-1
+          indices[j] -= 2; // -1,-1
           // std::cout << indices << " " << i2 << std::endl;
           if ((indices < nside_).sum() == DIM)
             *iter++ = (nside_prefsum_ * indices).sum() << 1 | odd;
-          indices[i] += 2;  // +1,-1
+          indices[i] += 2; // +1,-1
           // std::cout << indices << " " << i2 << std::endl;
           if ((indices < nside_).sum() == DIM)
             *iter++ = (nside_prefsum_ * indices).sum() << 1 | odd;
@@ -318,8 +317,7 @@ std::ostream &operator<<(std::ostream &out, BCC<DIM, F, I> bcc) {
              << "])";
 }
 
-template <int DIM, typename F, typename I = uint64_t>
-struct Cubic {
+template <int DIM, typename F, typename I = uint64_t> struct Cubic {
   typedef Eigen::Array<I, DIM, 1> In;
   typedef Eigen::Array<F, DIM, 1> Fn;
   static_assert((DIM > 2));
@@ -338,7 +336,8 @@ struct Cubic {
   void init(Sizes sizes, Fn lower = Fn(0), Fn upper = Fn(1)) {
     nside_ = sizes;
     lower_ = lower;
-    for (size_t i = 0; i < DIM; ++i) nside_prefsum_[i] = nside_.prod(i);
+    for (size_t i = 0; i < DIM; ++i)
+      nside_prefsum_[i] = nside_.prod(i);
     width_ = (upper - lower_) / nside_.template cast<F>();
     half_width_ = width_ / 2.0;
     lower_cen_ = lower_ + half_width_;
@@ -369,15 +368,18 @@ struct Cubic {
   void neighbors(I index, Iiter iter, bool = false) const noexcept {
     In idx0 = (index / nside_prefsum_) % nside_;
     In threes(1);
-    for (int d = 1; d < DIM; ++d) threes[d] = 3 * threes[d - 1];
+    for (int d = 1; d < DIM; ++d)
+      threes[d] = 3 * threes[d - 1];
     for (int i = 0; i < threes[DIM - 1] * 3; ++i) {
       In idx(idx0);
-      for (int d = 0; d < DIM; ++d) idx[d] += ((i / threes[d]) % 3) - 1;
+      for (int d = 0; d < DIM; ++d)
+        idx[d] += ((i / threes[d]) % 3) - 1;
       // std::cout << i << " " << (idx-idx0).template cast<int>()+1 <<
       // std::endl;
-      if ((idx < nside_).sum() == DIM) *iter++ = (nside_prefsum_ * idx).sum();
+      if ((idx < nside_).sum() == DIM)
+        *iter++ = (nside_prefsum_ * idx).sum();
     }
   }
 };
-}  // namespace geom
-}  // namespace willutil_cpp
+} // namespace geom
+} // namespace willutil_cpp

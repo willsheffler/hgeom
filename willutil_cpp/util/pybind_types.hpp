@@ -12,7 +12,7 @@ namespace util {
 
 using nogil = pybind11::call_guard<pybind11::gil_scoped_release>;
 
-pybind11::arg operator"" _c(const char *name, size_t) {
+inline pybind11::arg operator"" _c(const char *name, size_t) {
   return pybind11::arg(name).noconvert();
 }
 

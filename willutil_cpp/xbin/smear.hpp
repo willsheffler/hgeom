@@ -3,32 +3,30 @@
 
 #include <set>
 
-#include "rpxdock/phmap/phmap.hpp"
-#include "rpxdock/util/types.hpp"
-#include "rpxdock/xbin/xbin.hpp"
+#include "willutil_cpp/phmap/phmap.hpp"
+#include "willutil_cpp/util/types.hpp"
+#include "willutil_cpp/xbin/xbin.hpp"
 
-namespace rpxdock {
+namespace willutil_cpp {
 namespace xbin {
 
 using std::cout;
 using std::endl;
 
-template <typename F, typename K>
-using Xbin = XformHash_bt24_BCC6<X3<F>, K>;
+template <typename F, typename K> using Xbin = XformHash_bt24_BCC6<X3<F>, K>;
 using phmap::PHMap;
 
-template <typename F, typename K, typename V>
-struct PHMapUpdateMax {
-  typename PHMap<K, V>::Map& map;
-  Xbin<F, K> const& xbin;
+template <typename F, typename K, typename V> struct PHMapUpdateMax {
+  typename PHMap<K, V>::Map &map;
+  Xbin<F, K> const &xbin;
   K cell_index;
   V val0;
   K key0;
-  Vx<V> const& kernel;
-  PHMapUpdateMax(PHMap<K, V>& m, Xbin<F, K>& b, K c, V v, K k0, Vx<V>& ker)
+  Vx<V> const &kernel;
+  PHMapUpdateMax(PHMap<K, V> &m, Xbin<F, K> &b, K c, V v, K k0, Vx<V> &ker)
       : map(m.phmap_), xbin(b), cell_index(c), val0(v), key0(k0), kernel(ker) {}
-  PHMapUpdateMax<F, K, V>& operator++(int) noexcept { return *this; }
-  PHMapUpdateMax<F, K, V>& operator*() noexcept { return *this; }
+  PHMapUpdateMax<F, K, V> &operator++(int) noexcept { return *this; }
+  PHMapUpdateMax<F, K, V> &operator*() noexcept { return *this; }
   void operator=(std::pair<K, K> key_rad) noexcept {
     K bcc_key = key_rad.first;
     K radius = key_rad.second;
@@ -43,12 +41,12 @@ struct PHMapUpdateMax {
 };
 
 template <typename F, typename K, typename V>
-std::unique_ptr<PHMap<K, V>> smear(Xbin<F, K>& xbin, PHMap<K, V>& phmap,
-                                   int radius = 1, bool exhalf = false,
-                                   bool oddlast3 = true, bool sphere = true,
-                                   Vx<V> kernel = Vx<V>()) {
+std::unique_ptr<PHMap<K, V>>
+smear(Xbin<F, K> &xbin, PHMap<K, V> &phmap, int radius = 1, bool exhalf = false,
+      bool oddlast3 = true, bool sphere = true, Vx<V> kernel = Vx<V>()) {
   int r = xbin.grid().neighbor_radius_square_cut(radius, exhalf);
-  if (sphere) r = xbin.grid().neighbor_sphere_radius_square_cut(radius, exhalf);
+  if (sphere)
+    r = xbin.grid().neighbor_sphere_radius_square_cut(radius, exhalf);
   if (kernel.size() == 0) {
     kernel = Vx<V>(r);
     kernel.fill(1);
@@ -66,5 +64,5 @@ std::unique_ptr<PHMap<K, V>> smear(Xbin<F, K>& xbin, PHMap<K, V>& phmap,
   return out;
 }
 
-}  // namespace xbin
-}  // namespace rpxdock
+} // namespace xbin
+} // namespace willutil_cpp

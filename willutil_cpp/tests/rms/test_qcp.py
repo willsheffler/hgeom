@@ -1,6 +1,6 @@
 import willutil_cpp as wu
-from willutil_cpp.rms import qcp_rms_double, qcp_rms_vec_double, qcp_rms_align_double, qcp_rms_regions_f4i4
-from willutil_cpp.rms import qcp_rms_align_vec_double, qcp_rms_align_vec_float, qcp_rms_align_float, qcp_rms_vec_float
+from willutil_cpp import qcp_rms_double, qcp_rms_vec_double, qcp_rms_align_double, qcp_rms_regions_f4i4
+from willutil_cpp import qcp_rms_align_vec_double, qcp_rms_align_vec_float, qcp_rms_align_float, qcp_rms_vec_float
 import numpy as np
 
 def main():
@@ -28,8 +28,8 @@ def main():
    print('test_qcp PASS', flush=True)
 
 def test_qcp_vec(npts=(1000, 10)):
-   pts1 = wu.hrandpoint(npts)[:, :, :3].copy()
-   pts2 = wu.hrandpoint(npts[1])[:, :3].copy()
+   pts1 = wu.homog.hrandpoint(npts)[:, :, :3].copy()
+   pts2 = wu.homog.hrandpoint(npts[1])[:, :3].copy()
    with wu.Timer():
       rms = qcp_rms_vec_double(pts1, pts2)
    with wu.Timer():
@@ -42,8 +42,8 @@ def test_qcp_vec(npts=(1000, 10)):
    assert np.allclose(rms, rms3)
 
 def test_qcp_align_vec(npts=(1000, 10)):
-   pts1 = wu.hrandpoint(npts)[:, :, :3].copy()
-   pts2 = wu.hrandpoint(npts[1])[:, :3].copy()
+   pts1 = wu.homog.hrandpoint(npts)[:, :, :3].copy()
+   pts2 = wu.homog.hrandpoint(npts[1])[:, :3].copy()
    with wu.Timer():
       rms2, R2, T2 = zip(*[qcp_rms_align_double(p1, pts2) for p1 in pts1])
    rms, R, T = np.stack(rms2), np.stack(R2), np.stack(T2)
@@ -63,8 +63,8 @@ def test_qcp_align_vec(npts=(1000, 10)):
 
 def test_qcp_regions_simple_1seg():
    N = 100
-   pts1 = wu.hrandpoint(N + 10).astype(np.float32)
-   pts2 = wu.hrandpoint(N).astype(np.float32)
+   pts1 = wu.homog.hrandpoint(N + 10).astype(np.float32)
+   pts2 = wu.homog.hrandpoint(N).astype(np.float32)
    # pts1[:100] = pts1[:100] * 0.01 + pts2 * 0.99
    offsets = np.arange(10).reshape(10, 1)
    # offsets = np.tile(offsets, (170_000, 1))
@@ -79,8 +79,8 @@ def test_qcp_regions_simple_1seg():
 
 def test_qcp_regions_simple_2seg():
    N = 40
-   pts1 = wu.hrandpoint(N).astype(np.float32)
-   pts2 = wu.hrandpoint(N).astype(np.float32)
+   pts1 = wu.homog.hrandpoint(N).astype(np.float32)
+   pts2 = wu.homog.hrandpoint(N).astype(np.float32)
    rmsref = qcp_rms_double(pts1, pts2)
    # pts1[:, :3] -= pts1[:, :3].mean(axis=0).reshape(1, 3)
    # pts2[:, :3] -= pts2[:, :3].mean(axis=0).reshape(1, 3)
@@ -104,8 +104,8 @@ def _random_offsets(n, l, sizes):
 
 def test_qcp_regions_simple_Nseg():
    N = 40
-   pts1 = wu.hrandpoint(N).astype(np.float32)
-   pts2 = wu.hrandpoint(N).astype(np.float32)
+   pts1 = wu.homog.hrandpoint(N).astype(np.float32)
+   pts2 = wu.homog.hrandpoint(N).astype(np.float32)
    rmsref = qcp_rms_double(pts1, pts2)
    # pts1[:, :3] -= pts1[:, :3].mean(axis=0).reshape(1, 3)
    # pts2[:, :3] -= pts2[:, :3].mean(axis=0).reshape(1, 3)
@@ -144,9 +144,9 @@ def compute_rms_offsets_brute(pts1, pts2, sizes, offsets, junct=0):
 def perftest_qcp_regions():
    t = wu.Timer()
    ncalc = 0
-   for i in range(30):
-      pts1 = wu.hrandpoint(200).astype(np.float32)
-      pts2 = wu.hrandpoint(50).astype(np.float32)
+   for _ in range(30):
+      pts1 = wu.homog.hrandpoint(200).astype(np.float32)
+      pts2 = wu.homog.hrandpoint(50).astype(np.float32)
       sizes = _random_int_partition(len(pts2), len(pts2) - 5)
       offsets = _random_offsets(30_000, len(pts1), sizes)
       t.checkpoint('setup')
@@ -158,8 +158,8 @@ def perftest_qcp_regions():
    print(f'rms ncalc: {ncalc:,}, rate: {rmspersec:7.3}', flush=True)
 
 def helper_test_qcp_regions(noffset=1, junct=0, npts1=100, npts2=50):
-   pts1 = wu.hrandpoint(npts1).astype(np.float32)
-   pts2 = wu.hrandpoint(npts2).astype(np.float32)
+   pts1 = wu.homog.hrandpoint(npts1).astype(np.float32)
+   pts2 = wu.homog.hrandpoint(npts2).astype(np.float32)
    sizes = _random_int_partition(npts2, npts2 - 5)
    offsets = _random_offsets(noffset, len(pts1), sizes)
    rmsref = compute_rms_offsets_brute(pts1, pts2, sizes, offsets, junct=junct)
@@ -171,8 +171,8 @@ def test_qcp_regions():
       helper_test_qcp_regions(noffset=10, junct=0)
 
 def test_qcp_regions_junct_simple():
-   pts1 = wu.hrandpoint(9).astype(np.float32)[:, :3]
-   pts2 = wu.hrandpoint(9).astype(np.float32)[:, :3]
+   pts1 = wu.homog.hrandpoint(9).astype(np.float32)[:, :3]
+   pts2 = wu.homog.hrandpoint(9).astype(np.float32)[:, :3]
 
    # pts1 -= pts1[:4].mean(axis=0).reshape(-1, 3)
    # pts2 -= pts2[:4].mean(axis=0).reshape(-1, 3)
@@ -191,11 +191,11 @@ def test_qcp_regions_junct():
          helper_test_qcp_regions(noffset=10, junct=j)
 
 def test_qcp_align(niter=20, npts=50):
-   for i in range(niter):
-      pts1 = wu.hrandpoint(npts)
-      pts2 = wu.hrandpoint(npts)
+   for _ in range(niter):
+      pts1 = wu.homog.hrandpoint(npts)
+      pts2 = wu.homog.hrandpoint(npts)
       pts1copy, pts2copy = pts1.copy(), pts2.copy()
-      rms, fit, x = wu.hrmsfit(pts1, pts2)
+      rms, fit, x = wu.homog.hrmsfit(pts1, pts2)
       rms2, R, T = qcp_rms_align_double(pts1, pts2)
       assert np.allclose(rms, rms2)
       assert np.allclose(x[:3, :3], R)
@@ -208,10 +208,10 @@ def test_qcp_align(niter=20, npts=50):
       assert np.allclose(x[:3, 3], T, atol=1e-4)
 
 def test_qcp(niter=100, npts=50):
-   for i in range(niter):
-      pts1 = wu.hrandpoint(npts)
-      pts2 = wu.hrandpoint(npts)
-      rms, fit, x = wu.hrmsfit(pts1, pts2)
+   for _ in range(niter):
+      pts1 = wu.homog.hrandpoint(npts)
+      pts2 = wu.homog.hrandpoint(npts)
+      rms, fit, x = wu.homog.hrmsfit(pts1, pts2)
       rms2 = qcp_rms_double(pts1, pts2)
       assert np.allclose(rms, rms2)
 

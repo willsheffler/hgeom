@@ -126,7 +126,7 @@ Vx<K> BCC_getkeys(BCC<DIM, F, K> &bcc, RefMx<F> vals) {
 }
 
 template <int DIM, typename F, typename K>
-void bind_bcc(py::module m, std::string name) {
+void bind_bcc(py::module_ m, std::string name) {
   using BCC = BCC<DIM, F, K>;
   using Sizes = Matrix<K, DIM, 1>;
   using Floats = Matrix<F, DIM, 1>;
@@ -164,7 +164,7 @@ void bind_bcc(py::module m, std::string name) {
   //          "extrahalf"_a = false, "sphere"_a = true);
 }
 
-PYBIND11_MODULE(bcc, m) {
+PYBIND11_MODULE(_bcc, m) {
   bind_bcc<3, double, uint64_t>(m, "BCC3");
   bind_bcc<6, double, uint64_t>(m, "BCC6");
   bind_bcc<3, float, uint64_t>(m, "BCC3_float");

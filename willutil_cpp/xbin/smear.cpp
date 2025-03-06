@@ -17,7 +17,7 @@ setup_pybind11(cfg)
 */
 /** \file */
 
-#include "rpxdock/xbin/smear.hpp"
+#include "willutil_cpp/xbin/smear.hpp"
 
 #include <pybind11/eigen.h>
 #include <pybind11/numpy.h>
@@ -25,7 +25,7 @@ setup_pybind11(cfg)
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-namespace rpxdock {
+namespace willutil_cpp {
 namespace xbin {
 
 template <typename F, typename K, typename V>
@@ -44,4 +44,4 @@ PYBIND11_MODULE(smear, m) {
 }
 
 } // namespace xbin
-} // namespace rpxdock
+} // namespace willutil_cpp

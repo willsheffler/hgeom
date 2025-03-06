@@ -501,40 +501,39 @@ py::array_t<F> F6_to_xform(Xbin<F, K> const &xbin, Mx<F> f6, Vx<K> cell) {
 }
 
 template <typename F, typename K>
-void bind_xbin(py::module m, std::string name) {
+void bind_xbin(py::module_ m, std::string name) {
   using THIS = Xbin<F, K>;
-  auto cls =
-      py::class_<THIS>(m, name.c_str())
-          .def(py::init<F, F, F>(), "cart_resl"_a = 1.0, "ori_resl"_a = 20.0,
-               "max_cart"_a = 512.0)
-          .def("__getitem__", &key_of<F, K>)
-          .def("__getitem__", &_bincen_of<F, K>)
-          .def("key_of", &key_of<F, K>, "key of xform", "xform"_c)
-          .def("ori_cell_of", &ori_cell_of<F, K>, "key of xform", "xform"_c)
-          .def("bincen_of", &_bincen_of<F, K>)
-          .def("xform_to_F6", &xform_to_F6<F, K>)
-          .def("F6_to_xform", &F6_to_xform<F, K>)
-          .def_readonly("grid6", &THIS::grid6_)
-          .def_readonly("cart_resl", &THIS::cart_resl_)
-          .def_readonly("ori_resl", &THIS::ori_resl_)
-          .def_readonly("max_cart", &THIS::cart_bound_)
-          .def_readonly("ori_nside", &THIS::ori_nside_)
-          .def("__eq__",
-               [](THIS const &a, THIS const &b) {
-                 return a.cart_resl_ == b.cart_resl_ &&
-                        a.ori_nside_ == b.ori_nside_ &&
-                        a.cart_bound_ == b.cart_bound_;
-               })
-          .def(py::pickle(
-              [](const THIS &xbin) { // __getstate__
-                return py::make_tuple(xbin.cart_resl_, xbin.ori_nside_,
-                                      xbin.cart_bound_);
-              },
-              [](py::tuple t) { // __setstate__
-                if (t.size() != 3)
-                  throw std::runtime_error("Invalid state!");
-                return THIS(t[0].cast<F>(), t[1].cast<int>(), t[2].cast<F>());
-              }))
+  py::class_<THIS>(m, name.c_str())
+      .def(py::init<F, F, F>(), "cart_resl"_a = 1.0, "ori_resl"_a = 20.0,
+           "max_cart"_a = 512.0)
+      .def("__getitem__", &key_of<F, K>)
+      .def("__getitem__", &_bincen_of<F, K>)
+      .def("key_of", &key_of<F, K>, "key of xform", "xform"_c)
+      .def("ori_cell_of", &ori_cell_of<F, K>, "key of xform", "xform"_c)
+      .def("bincen_of", &_bincen_of<F, K>)
+      .def("xform_to_F6", &xform_to_F6<F, K>)
+      .def("F6_to_xform", &F6_to_xform<F, K>)
+      .def_readonly("grid6", &THIS::grid6_)
+      .def_readonly("cart_resl", &THIS::cart_resl_)
+      .def_readonly("ori_resl", &THIS::ori_resl_)
+      .def_readonly("max_cart", &THIS::cart_bound_)
+      .def_readonly("ori_nside", &THIS::ori_nside_)
+      .def("__eq__",
+           [](THIS const &a, THIS const &b) {
+             return a.cart_resl_ == b.cart_resl_ &&
+                    a.ori_nside_ == b.ori_nside_ &&
+                    a.cart_bound_ == b.cart_bound_;
+           })
+      .def(py::pickle(
+          [](const THIS &xbin) { // __getstate__
+            return py::make_tuple(xbin.cart_resl_, xbin.ori_nside_,
+                                  xbin.cart_bound_);
+          },
+          [](py::tuple t) { // __setstate__
+            if (t.size() != 3)
+              throw std::runtime_error("Invalid state!");
+            return THIS(t[0].cast<F>(), t[1].cast<int>(), t[2].cast<F>());
+          }))
 
       /**/;
 }
@@ -544,7 +543,7 @@ Xbin<F, K> create_Xbin_nside(F cart_resl, int nside, F max_cart) {
   return XformHash_bt24_BCC6<X3<F>, K>(cart_resl, nside, max_cart);
 }
 
-PYBIND11_MODULE(xbin, m) {
+PYBIND11_MODULE(_xbin, m) {
   using K = uint64_t;
   bind_xbin<double, K>(m, "Xbin_double");
   bind_xbin<float, K>(m, "Xbin_float");

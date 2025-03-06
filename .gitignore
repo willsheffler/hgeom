@@ -3,4 +3,8 @@
 /build
 *.sublime-workspace
 sublime_build.log
-
+CMakeFiles
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+uv.lock

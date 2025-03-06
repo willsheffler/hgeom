@@ -3,7 +3,7 @@
 import os
 include = os.path.join(os.path.dirname(self.filename),'../..')
 cfg['include_dirs'] = [include, f'{include}/willutil_cpp/extern']
-cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
+-cfg['compiler_args'] = ['-std=c++17', '-w', '-Ofast']
 cfg['dependencies'] = []
 cfg['parallel'] = True
 setup_pybind11(cfg)
@@ -417,7 +417,7 @@ py::tuple expand_xforms(py::array_t<F> generators, int N = 5, F maxrad = 9e9,
   }
 }
 
-PYBIND11_MODULE(expand_xforms, m) {
+PYBIND11_MODULE(_expand_xforms, m) {
   // m.def("expand_xforms_loop", &expand_xforms_loop<double>);
 
   m.def("expand_xforms", &expand_xforms<double>, "", "generators"_a, "depth"_a,

@@ -18,7 +18,7 @@
         },
         "project_environment": {
             "env": {
-                "PYTHON": "/home/sheffler/sw/MambaForge/envs/wu/bin/python",
+                "PYTHON": "/home/sheffler/sw/MambaForge/envs/wcpp/bin/python",
                 // "PYTHON": "/home/sheffler/sw/MambaForge/envs/wu/bin/python",
                 "QT_QPA_PLATFORM": "xcb"
             }
@@ -27,8 +27,18 @@
     "build_systems":
     [
         {
+            "name": "inplace build",
+            "shell_cmd": "(cd /home/sheffler/willutil_cpp/willutil_cpp && cmake /home/sheffler/willutil_cpp && make -j12 && cd .. && PYTHONPATH=. \\$PYTHON -m pytest) 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
+            "name": "uv run pytest",
+            "shell_cmd": "mkdir -p /tmp/willutil_cpp; cd /tmp/willutil_cpp; uv pip install --upgrade /home/sheffler/willutil_cpp; uv run pytest /home/sheffler/willutil_cpp 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
             "name": "pytest all",
-            "shell_cmd": "cd $folder; PYTHONPATH=. \\$PYTHON -m pytest willutil_cpp/tests  2>&1 | tee $folder/ide/sublime_build.log",
+            "shell_cmd": "cd $folder; PYTHONPATH=. \\$PYTHON -m pytest willutil_cpp/tests -x 2>&1 | tee $folder/ide/sublime_build.log",
             "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
         },
         {
