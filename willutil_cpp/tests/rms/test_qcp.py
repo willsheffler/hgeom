@@ -144,7 +144,7 @@ def compute_rms_offsets_brute(pts1, pts2, sizes, offsets, junct=0):
 def perftest_qcp_regions():
    t = wu.Timer()
    ncalc = 0
-   for i in range(30):
+   for _ in range(30):
       pts1 = wu.homog.hrandpoint(200).astype(np.float32)
       pts2 = wu.homog.hrandpoint(50).astype(np.float32)
       sizes = _random_int_partition(len(pts2), len(pts2) - 5)
