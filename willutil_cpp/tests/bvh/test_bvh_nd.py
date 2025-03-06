@@ -5,7 +5,7 @@ import pytest
 pytest.importorskip('willutil_cpp.bvh_nd')
 from willutil_cpp.bvh_nd import *
 
-def test_bvh_bvh_isect7():
+def test_bvh_isect7():
    nhit, ntot = 0, 0
    for iter in range(1):
       pts = np.random.randn(1_000, 7) + [2, 2, 2, 2, 2, 2, 2]
@@ -14,8 +14,8 @@ def test_bvh_bvh_isect7():
       pts2 = np.random.randn(1_000, 7)
       bvh2 = create_bvh7d(pts2)
       for mindis in np.arange(0.1, 2, 0.1):
-         isect1 = bvh_bvh_isect7d(bvh, bvh2, mindis)
-         isect2 = bvh_bvh_isect7d_naive(bvh, bvh2, mindis)
+         isect1 = bvh_isect7d(bvh, bvh2, mindis)
+         isect2 = bvh_isect7d_naive(bvh, bvh2, mindis)
          assert isect1 == isect2
          nhit += isect1
          ntot += 1
@@ -106,7 +106,7 @@ def test_bvh_mindist7():
 
 if __name__ == "__main__":
    # print(4096 / 2.9, 1000000 / 38.3)
-   # test_bvh_bvh_isect7()
+   # test_bvh_isect7()
    # test_bvh_isect7()
    test_bvh_mindist7()
    # test_bvh_mindist4()

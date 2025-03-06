@@ -104,14 +104,14 @@ template <typename F, int DIM> struct BVBVIsectND {
   bool result = false;
 };
 template <typename F, int DIM>
-bool bvh_bvh_isect(BVH<F, DIM> &bvh1, BVH<F, DIM> &bvh2, F thresh) {
+bool bvh_isect(BVH<F, DIM> &bvh1, BVH<F, DIM> &bvh2, F thresh) {
   py::gil_scoped_release release;
   BVBVIsectND<F, DIM> query(thresh);
   willutil_cpp::bvh::BVIntersect(bvh1, bvh2, query);
   return query.result;
 }
 template <typename F, int DIM>
-bool bvh_bvh_isect_naive(BVH<F, DIM> &bvh1, BVH<F, DIM> &bvh2, F thresh) {
+bool bvh_isect_naive(BVH<F, DIM> &bvh1, BVH<F, DIM> &bvh2, F thresh) {
   F dist2 = thresh * thresh;
   for (auto o1 : bvh1.objs) {
     for (auto o2 : bvh2.objs) {
@@ -303,8 +303,8 @@ template <typename F, int DIM> void bind_bvh_ND(auto m, std::string name) {
 PYBIND11_MODULE(_bvh_nd, m) {
   bind_bvh_ND<double, 7>(m, "SphereBVH7D");
   m.def("create_bvh7d", &create_bvh_nd<double, 7>);
-  m.def("bvh_bvh_isect7d", &bvh_bvh_isect<double, 7>);
-  m.def("bvh_bvh_isect7d_naive", &bvh_bvh_isect_naive<double, 7>);
+  m.def("bvh_isect7d", &bvh_isect<double, 7>);
+  m.def("bvh_isect7d_naive", &bvh_isect_naive<double, 7>);
   m.def("bvh_isect7d", &bvh_isect<double, 7>);
   m.def("bvh_isect7d_naive", &bvh_isect_naive<double, 7>);
   m.def("bvh_mindist7d", &bvh_mindist<double, 7>);

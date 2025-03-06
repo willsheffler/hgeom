@@ -144,7 +144,7 @@ def compute_rms_offsets_brute(pts1, pts2, sizes, offsets, junct=0):
 def perftest_qcp_regions():
    t = wu.Timer()
    ncalc = 0
-   for _ in range(30):
+   for i in range(30):
       pts1 = wu.homog.hrandpoint(200).astype(np.float32)
       pts2 = wu.homog.hrandpoint(50).astype(np.float32)
       sizes = _random_int_partition(len(pts2), len(pts2) - 5)
@@ -191,7 +191,7 @@ def test_qcp_regions_junct():
          helper_test_qcp_regions(noffset=10, junct=j)
 
 def test_qcp_align(niter=20, npts=50):
-   for _ in range(niter):
+   for i in range(niter):
       pts1 = wu.homog.hrandpoint(npts)
       pts2 = wu.homog.hrandpoint(npts)
       pts1copy, pts2copy = pts1.copy(), pts2.copy()
@@ -208,7 +208,7 @@ def test_qcp_align(niter=20, npts=50):
       assert np.allclose(x[:3, 3], T, atol=1e-4)
 
 def test_qcp(niter=100, npts=50):
-   for _ in range(niter):
+   for i in range(niter):
       pts1 = wu.homog.hrandpoint(npts)
       pts2 = wu.homog.hrandpoint(npts)
       rms, fit, x = wu.homog.hrmsfit(pts1, pts2)

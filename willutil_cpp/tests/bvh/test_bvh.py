@@ -6,7 +6,7 @@ from time import perf_counter
 # cppimport.set_quiet(False)
 
 import willutil_cpp as wu
-from willutil_cpp import BVH
+from willutil_cpp import BVH, SphereBVH_float, SphereBVH_double
 import willutil_cpp.homog as hm
 
 def test_bvh_isect_fixed():
@@ -44,7 +44,7 @@ def test_bvh_isect_fixed():
 
     print("total times", totbvh, totnaive / totbvh, totnaive)
 
-def test_bvh_isect():
+def helper_test_bvh_isect(Bvh):
     t = wu.Timer().start()
 
     N1, N2 = 5, 7
@@ -60,8 +60,8 @@ def test_bvh_isect():
         pos2 = hm.rand_xform(N2, cart_sd=0.8)
         t.checkpoint('init')
 
-        bvh1 = BVH(xyz1)
-        bvh2 = BVH(xyz2)
+        bvh1 = Bvh(xyz1)
+        bvh2 = Bvh(xyz2)
         t.checkpoint('BVH')
 
         clash = list()
@@ -87,6 +87,12 @@ def test_bvh_isect():
         f"bvh_vec {int(N/t.sum.bvh_isect_vec):,} fastnaive {int(N/t.sum.naive_isect):,}/s",
         f"ratio {int(t.sum.naive_isect/t.sum.bvh_isect_vec):,}x",
     )
+
+def test_bvh_isect_double():
+    helper_test_bvh_isect(SphereBVH_double)
+
+def test_bvh_isect_float():
+    helper_test_bvh_isect(SphereBVH_float)
 
 def test_bvh_isect_fixed_range():
     N1 = 10
@@ -196,13 +202,13 @@ def test_bvh_min_dist():
         f"tcre {tcre:2.4f}",
     )
 
-def test_bvh_min_dist_floormin():
+def helper_test_bvh_min_dist_floormin(Bvh):
 
     xyz1 = np.random.rand(1000, 3) - [0.5, 0.5, 0.5]
     xyz2 = np.random.rand(1000, 3) - [0.5, 0.5, 0.5]
     tcre = perf_counter()
-    bvh1 = BVH(xyz1)
-    bvh2 = BVH(xyz2)
+    bvh1 = Bvh(xyz1)
+    bvh2 = Bvh(xyz2)
     tcre = perf_counter() - tcre
     # print()
     totbvh, totnaive = 0, 0
@@ -238,6 +244,12 @@ def test_bvh_min_dist_floormin():
         totnaive,
         f"tcre {tcre:2.4f}",
     )
+
+def test_bvh_min_dist_floormin_double():
+    helper_test_bvh_min_dist_floormin(SphereBVH_double)
+
+def test_bvh_min_dist_floormin_float():
+    helper_test_bvh_min_dist_floormin(SphereBVH_float)
 
 def test_bvh_slide_single_inline():
 
@@ -321,10 +333,11 @@ def test_bvh_slide_single_xform():
             assert target_d2 < dperp2
     print("nmiss", nmiss, nmiss / 1000)
 
-def test_bvh_slide_whole():
+def helper_test_bvh_slide_whole(Bvh):
 
     # timings wtih -Ofast
     # slide test 10,000 iter bvhslide float: 16,934/s double: 16,491/s bvhmin 17,968/s fracmiss: 0.0834
+    atol = 1e-6 if isinstance(Bvh, SphereBVH_double) else 1e-4
 
     # np.random.seed(0)
     N1, N2 = 2, 10
@@ -334,8 +347,8 @@ def test_bvh_slide_whole():
         xyz1 = np.random.rand(5000, 3) - [0.5, 0.5, 0.5]
         xyz2 = np.random.rand(5000, 3) - [0.5, 0.5, 0.5]
         # tcre = perf_counter()
-        bvh1 = BVH(xyz1)
-        bvh2 = BVH(xyz2)
+        bvh1 = Bvh(xyz1)
+        bvh2 = Bvh(xyz2)
         # bvh1f = BVH_32bit(xyz1)
         # bvh2f = BVH_32bit(xyz2)
         # tcre = perf_counter() - tcre
@@ -364,9 +377,9 @@ def test_bvh_slide_whole():
                 tn = perf_counter()
                 dn, i, j = wu.bvh_min_dist(bvh1, bvh2, tmp, pos2[i])
                 tn = perf_counter() - tn
-                if not np.allclose(dn, 2 * radius, atol=1e-6):
+                if not np.allclose(dn, 2 * radius, atol=atol):
                     print(dn, 2 * radius)
-                assert np.allclose(dn, 2 * radius, atol=1e-6)
+                assert np.allclose(dn, 2 * radius, atol=atol)
 
             # print(
             # i,
@@ -385,6 +398,13 @@ def test_bvh_slide_whole():
         # f"slide test {N:,} iter bvhslide float: {int(N/totbvhf):,}/s double: {int(N/totbvh):,}/s bvhmin {int(N/totmin):,}/s",
         f"fracmiss: {nmiss/N}",
     )
+
+def test_bvh_slide_whole_float():
+    helper_test_bvh_slide_whole(SphereBVH_float)
+
+def test_bvh_slide_whole_double():
+    helper_test_bvh_slide_whole(SphereBVH_double)
+
 
 def test_collect_pairs_simple():
     print("test_collect_pairs_simple")
@@ -545,15 +565,15 @@ def test_collect_pairs():
         f"collect test {N:,} iter wu {int(N/totbvh):,}/s naive {int(N/totnai):,}/s ratio {totnai/totbvh:7.2f} count-only {int(N/totct):,}/s avg cnt {ntot/N}"
     )
 
-def test_collect_pairs_range():
+def helper_test_collect_pairs_range(Bvh):
     N1, N2 = 1, 500
     N = N1 * N2
     Npts = 1000
     for j in range(N1):
         xyz1 = np.random.rand(Npts, 3) - [0.5, 0.5, 0.5]
         xyz2 = np.random.rand(Npts, 3) - [0.5, 0.5, 0.5]
-        bvh1 = BVH(xyz1)
-        bvh2 = BVH(xyz2)
+        bvh1 = Bvh(xyz1)
+        bvh2 = Bvh(xyz2)
         pos1, pos2 = list(), list()
         while 1:
             x1 = hm.rand_xform(cart_sd=0.5)
@@ -593,7 +613,7 @@ def test_collect_pairs_range():
             assert np.all(u1 == u2)
 
         rpairs, rlbub = wu.bvh_collect_pairs_range_vec(bvh1, bvh2, pos1, pos2, mindist, [600], [1000], -1,
-                                                        [100], [400], -1)
+                                                       [100], [400], -1)
         assert len(rlbub) == len(pos1)
         assert np.all(rpairs[:, 0] >= 600)
         assert np.all(rpairs[:, 0] <= 1000)
@@ -603,6 +623,12 @@ def test_collect_pairs_range():
                            (pairs[:, 1] <= 400)]
         assert np.all(filt_pairs == rpairs)  # sketchy???
         assert np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1))
+
+def test_collect_pairs_range_double():
+    helper_test_collect_pairs_range(SphereBVH_double)
+
+def test_collect_pairs_range_float():
+    helper_test_collect_pairs_range(SphereBVH_float)
 
 def test_collect_pairs_range_sym():
     for trial in range(3):
@@ -697,9 +723,9 @@ def test_collect_pairs_range_sym():
                     else:
                         if np.any(filt_pairs != rpairs):  # sketchy???
                             n_filtpairerr += 1
-                        if not np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1)) and itries > 0:
-                            assert np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1))
-
+                        if not np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1)):
+                            if itries > 0:
+                                assert np.allclose(np.unique(filt_pairs, axis=1), np.unique(rpairs, axis=1))
 
             # allow one off by one b/c it happens rarely and isn't worth fixing
             assert n_off_by_one <= 1
@@ -828,11 +854,15 @@ def test_bvh_isect_range(body=None, cart_sd=0.3, N2=10, mindist=0.02):
                 nhit += 1
 
             tbvh = perf_counter()
-            range1 = wu.isect_range_single(bvh1=bvh1, bvh2=bvh2, pos1=pos1[i], pos2=pos2[i], mindist=mindist)
+            range1 = wu.bvh_isect_range_single(bvh1=bvh1,
+                                               bvh2=bvh2,
+                                               pos1=pos1[i],
+                                               pos2=pos2[i],
+                                               mindist=mindist)
             tbvh = perf_counter() - tbvh
 
             tn = perf_counter()
-            range2 = wu.naive_isect_range(bvh1, bvh2, pos1[i], pos2[i], mindist)
+            range2 = wu.naive_bvh_isect_range(bvh1, bvh2, pos1[i], pos2[i], mindist)
             assert range1 == range2
             tn = perf_counter() - tn
 
@@ -847,7 +877,7 @@ def test_bvh_isect_range(body=None, cart_sd=0.3, N2=10, mindist=0.02):
             totbvh += tbvh
             totnaive += tn
             totbvh0 += tbvh0
-        lb, ub = wu.isect_range(bvh1, bvh2, pos1, pos2, mindist)
+        lb, ub = wu.bvh_isect_range(bvh1, bvh2, pos1, pos2, mindist)
         ranges = np.array(ranges)
         assert np.all(lb == ranges[:, 0])
         assert np.all(ub == ranges[:, 1])
@@ -861,7 +891,7 @@ def test_bvh_isect_range(body=None, cart_sd=0.3, N2=10, mindist=0.02):
         f"ratio {int(totnaive/totbvh):,}x isect-only: {totbvh/totbvh0:3.3f}x",
     )
 
-def test_bvh_isect_range_ids():
+def helper_test_bvh_isect_range_ids(Bvh):
     N1 = 23
     N2 = 41
     N = N1 * N2
@@ -888,8 +918,8 @@ def test_bvh_isect_range_ids():
         xyz1 = random_walk(Npts)
         xyz2 = random_walk(Npts)
         tcre = perf_counter()
-        bvh1 = BVH(xyz1, [], np.repeat(np.arange(Nids), Npts / Nids))
-        bvh2 = BVH(xyz2, [], np.repeat(np.arange(Nids), Npts / Nids))
+        bvh1 = Bvh(xyz1, [], np.repeat(np.arange(Nids), Npts / Nids))
+        bvh2 = Bvh(xyz2, [], np.repeat(np.arange(Nids), Npts / Nids))
         tcre = perf_counter() - tcre
         pos1 = hm.rand_xform(N2, cart_sd=cart_sd)
         pos2 = hm.rand_xform(N2, cart_sd=cart_sd)
@@ -905,7 +935,7 @@ def test_bvh_isect_range_ids():
         # assert bvh1.min_lb() == 0
         # assert bvh1.max_ub() == Nids - 1
 
-        lb, ub = wu.isect_range(bvh1, bvh2, pos1, pos2, mindist)
+        lb, ub = wu.bvh_isect_range(bvh1, bvh2, pos1, pos2, mindist)
         pos1 = pos1[lb != -1]
         pos2 = pos2[lb != -1]
         ub = ub[lb != -1]
@@ -931,14 +961,20 @@ def test_bvh_isect_range_ids():
         # print('isectlbub', np.sum(isect), np.sum(isect) / len(isect))
         assert not np.any(isect[lb <= ub])
 
+
+def test_bvh_isect_range_ids_flaot():
+    helper_test_bvh_isect_range_ids(SphereBVH_float)
+
+def test_bvh_isect_range_ids_double():
+    helper_test_bvh_isect_range_ids(SphereBVH_double)
+
 def test_bvh_isect_range_lb_ub(body=None, cart_sd=0.3, N1=3, N2=20, mindist=0.02):
     N1 = 1 if body else N1
     N = N1 * N2
     Npts = 1000
     nhit, nrangefail = 0, 0
     kws = [
-        dict(maxtrim=a, maxtrim_lb=b, maxtrim_ub=c) for a in (-1, 400) for b in (-1, 300)
-        for c in (-1, 300)
+        dict(maxtrim=a, maxtrim_lb=b, maxtrim_ub=c) for a in (-1, 400) for b in (-1, 300) for c in (-1, 300)
     ]
     for ibvh, kw in it.product(range(N1), kws):
         if body:
@@ -957,12 +993,12 @@ def test_bvh_isect_range_lb_ub(body=None, cart_sd=0.3, N1=3, N2=20, mindist=0.02
         for i in range(N2):
             c = wu.bvh_isect(bvh1=bvh1, bvh2=bvh2, pos1=pos1[i], pos2=pos2[i], mindist=mindist)
             if c: nhit += 1
-            range1 = wu.isect_range_single(bvh1=bvh1,
-                                            bvh2=bvh2,
-                                            pos1=pos1[i],
-                                            pos2=pos2[i],
-                                            mindist=mindist,
-                                            **kw)
+            range1 = wu.bvh_isect_range_single(bvh1=bvh1,
+                                               bvh2=bvh2,
+                                               pos1=pos1[i],
+                                               pos2=pos2[i],
+                                               mindist=mindist,
+                                               **kw)
             ranges.append(range1)
             if range1[0] < 0:
                 nrangefail += 1
@@ -974,26 +1010,26 @@ def test_bvh_isect_range_lb_ub(body=None, cart_sd=0.3, N1=3, N2=20, mindist=0.02
             assert (kw['maxtrim_ub'] < 0) or (range1[1] + 1 >= Npts - kw['maxtrim_ub'])
 
             # mostly covered elsewhere, and quite slow
-            # range2 = wu.naive_isect_range(bvh1, bvh2, pos1[i], pos2[i], mindist)
+            # range2 = wu.naive_bvh_isect_range(bvh1, bvh2, pos1[i], pos2[i], mindist)
             # assert range1 == range2
 
-        lb, ub = wu.isect_range(bvh1, bvh2, pos1, pos2, mindist, **kw)
+        lb, ub = wu.bvh_isect_range(bvh1, bvh2, pos1, pos2, mindist, **kw)
         ranges = np.array(ranges)
         assert np.all(lb == ranges[:, 0])
         assert np.all(ub == ranges[:, 1])
 
     print(f"iscet {nhit:,} hit of {N:,} iter, frangefail {nrangefail/nhit}", )
 
-def test_bvh_pickle(tmpdir):
+def helper_test_bvh_pickle(Bvh, tmpdir):
     xyz1 = np.random.rand(1000, 3) - [0.5, 0.5, 0.5]
     xyz2 = np.random.rand(1000, 3) - [0.5, 0.5, 0.5]
-    bvh1 = BVH(xyz1)
-    bvh2 = BVH(xyz2)
+    bvh1 = Bvh(xyz1)
+    bvh2 = Bvh(xyz2)
     pos1 = hm.rand_xform(cart_sd=1)
     pos2 = hm.rand_xform(cart_sd=1)
     tbvh = perf_counter()
     d, i1, i2 = wu.bvh_min_dist(bvh1, bvh2, pos1, pos2)
-    rng = wu.isect_range_single(bvh1, bvh2, pos1, pos2, mindist=d + 0.01)
+    rng = wu.bvh_isect_range_single(bvh1, bvh2, pos1, pos2, mindist=d + 0.01)
 
     with open(tmpdir + "/1", "wb") as out:
         _pickle.dump(bvh1, out)
@@ -1015,8 +1051,14 @@ def test_bvh_pickle(tmpdir):
     assert np.allclose(d, db)
     assert i1 == i1b
     assert i2 == i2b
-    rngb = wu.isect_range_single(bvh1b, bvh2b, pos1, pos2, mindist=d + 0.01)
+    rngb = wu.bvh_isect_range_single(bvh1b, bvh2b, pos1, pos2, mindist=d + 0.01)
     assert rngb == rng
+
+def test_bvh_pickle_float(tmpdir):
+    helper_test_bvh_pickle(SphereBVH_float, tmpdir)
+
+def test_bvh_pickle_double(tmpdir):
+    helper_test_bvh_pickle(SphereBVH_double, tmpdir)
 
 def test_bvh_threading_isect_may_fail():
     from concurrent.futures import ThreadPoolExecutor

@@ -558,10 +558,10 @@ nasym1: if bvh is sym, only trim asu (# asym resis); -1 = all
 query obj takes clash dist, and calls BVIntersect and returns lb and ub arrays
 of N and C term trim objs
 */
-py::tuple isect_range(BVH<F> &bvh1, BVH<F> &bvh2, py::array_t<F> pos1,
-                      py::array_t<F> pos2, F mindist, int maxtrim = -1,
-                      int maxtrim_lb = -1, int maxtrim_ub = -1,
-                      int nasym1 = -1) {
+py::tuple bvh_isect_range(BVH<F> &bvh1, BVH<F> &bvh2, py::array_t<F> pos1,
+                          py::array_t<F> pos2, F mindist, int maxtrim = -1,
+                          int maxtrim_lb = -1, int maxtrim_ub = -1,
+                          int nasym1 = -1) {
   auto x1 = xform_py_to_eigen(pos1);
   auto x2 = xform_py_to_eigen(pos2);
   if (x1.size() != x2.size() && x1.size() != 1 && x2.size() != 1)
@@ -592,9 +592,10 @@ py::tuple isect_range(BVH<F> &bvh1, BVH<F> &bvh2, py::array_t<F> pos1,
   return py::make_tuple(*lb, *ub);
 }
 template <typename F>
-py::tuple isect_range_single(BVH<F> &bvh1, BVH<F> &bvh2, M4<F> pos1, M4<F> pos2,
-                             F mindist, int maxtrim = -1, int maxtrim_lb = -1,
-                             int maxtrim_ub = -1, int nasym1 = -1) {
+py::tuple bvh_isect_range_single(BVH<F> &bvh1, BVH<F> &bvh2, M4<F> pos1,
+                                 M4<F> pos2, F mindist, int maxtrim = -1,
+                                 int maxtrim_lb = -1, int maxtrim_ub = -1,
+                                 int nasym1 = -1) {
   int lb, ub;
   {
     py::gil_scoped_release release;
@@ -611,8 +612,8 @@ py::tuple isect_range_single(BVH<F> &bvh1, BVH<F> &bvh2, M4<F> pos1, M4<F> pos2,
 }
 
 template <typename F>
-py::tuple naive_isect_range(BVH<F> &bvh1, BVH<F> &bvh2, M4<F> pos1, M4<F> pos2,
-                            F mindist) {
+py::tuple naive_bvh_isect_range(BVH<F> &bvh1, BVH<F> &bvh2, M4<F> pos1,
+                                M4<F> pos2, F mindist) {
   X3<F> x1(pos1), x2(pos2);
   X3<F> pos = x1.inverse() * x2;
   F dist2 = mindist * mindist;
@@ -1160,22 +1161,37 @@ PYBIND11_MODULE(_bvh, m) {
 
   m.def("bvh_min_dist", &bvh_min_dist<double>, "min pair distance", "bvh1"_a,
         "bvh2"_a, "pos1"_a, "pos2"_a);
+  m.def("bvh_min_dist", &bvh_min_dist<float>, "min pair distance", "bvh1"_a,
+        "bvh2"_a, "pos1"_a, "pos2"_a);
+
   m.def("bvh_min_dist_vec", &bvh_min_dist_vec<double>, "min pair distance",
         "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a);
-  // m.def("bvh_min_dist_32bit", &bvh_min_dist<float>, "intersction test",
-  // "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a);
+  m.def("bvh_min_dist_vec", &bvh_min_dist_vec<float>, "min pair distance",
+        "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a);
+
   m.def("bvh_min_dist_fixed", &bvh_min_dist_fixed<double>);
+  m.def("bvh_min_dist_fixed", &bvh_min_dist_fixed<float>);
+
+  m.def("naive_min_dist", &naive_min_dist<float>);
   m.def("naive_min_dist", &naive_min_dist<double>);
+  m.def("naive_min_dist_fixed", &naive_min_dist_fixed<float>);
   m.def("naive_min_dist_fixed", &naive_min_dist_fixed<double>);
 
+  m.def("bvh_isect", &bvh_isect<float>, "intersction test", "bvh1"_a, "bvh2"_a,
+        "pos1"_a, "pos2"_a, "mindist"_a);
   m.def("bvh_isect", &bvh_isect<double>, "intersction test", "bvh1"_a, "bvh2"_a,
         "pos1"_a, "pos2"_a, "mindist"_a);
+
+  m.def("bvh_isect_vec", &bvh_isect_vec<float>, "intersction test", "bvh1"_a,
+        "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a);
   m.def("bvh_isect_vec", &bvh_isect_vec<double>, "intersction test", "bvh1"_a,
         "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a);
-  // m.def("bvh_isect_32bit", &bvh_isect<float>, "intersction test", "bvh1"_a,
-  // "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a);
+
+  m.def("bvh_isect_fixed", &bvh_isect_fixed<float>);
   m.def("bvh_isect_fixed", &bvh_isect_fixed<double>);
+  m.def("naive_isect", &naive_isect<float>);
   m.def("naive_isect", &naive_isect<double>);
+  m.def("naive_isect_fixed", &naive_isect_fixed<float>);
   m.def("naive_isect_fixed", &naive_isect_fixed<double>);
 
   Vx<int> default_ub(1), default_lb(1);
@@ -1185,17 +1201,36 @@ PYBIND11_MODULE(_bvh, m) {
         "intersction test with input range", "bvh1"_a, "bvh2"_a, "pos1"_a,
         "pos2"_a, "mindist"_a, "lb1"_a = default_lb, "ub1"_a = default_ub,
         "lb2"_a = default_lb, "ub2"_a = default_ub);
+  m.def("bvh_isect_fixed_range_vec", &bvh_isect_fixed_range_vec<float>,
+        "intersction test with input range", "bvh1"_a, "bvh2"_a, "pos1"_a,
+        "pos2"_a, "mindist"_a, "lb1"_a = default_lb, "ub1"_a = default_ub,
+        "lb2"_a = default_lb, "ub2"_a = default_ub);
 
-  m.def("isect_range_single", &isect_range_single<double>, "intersction test",
+  m.def("bvh_isect_range_single", &bvh_isect_range_single<float>,
+        "intersction test", "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a,
+        "maxtrim"_a = -1, "maxtrim_lb"_a = -1, "maxtrim_ub"_a = -1,
+        "nasym1"_a = -1);
+  m.def("bvh_isect_range_single", &bvh_isect_range_single<double>,
+        "intersction test", "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a,
+        "maxtrim"_a = -1, "maxtrim_lb"_a = -1, "maxtrim_ub"_a = -1,
+        "nasym1"_a = -1);
+
+  m.def("bvh_isect_range", &bvh_isect_range<float>, "intersction test",
         "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a, "maxtrim"_a = -1,
         "maxtrim_lb"_a = -1, "maxtrim_ub"_a = -1, "nasym1"_a = -1);
-  m.def("isect_range", &isect_range<double>, "intersction test", "bvh1"_a,
-        "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a, "maxtrim"_a = -1,
+  m.def("bvh_isect_range", &bvh_isect_range<double>, "intersction test",
+        "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a, "maxtrim"_a = -1,
         "maxtrim_lb"_a = -1, "maxtrim_ub"_a = -1, "nasym1"_a = -1);
-  m.def("naive_isect_range", &naive_isect_range<double>, "intersction test",
-        "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a, "mindist"_a);
 
+  m.def("naive_bvh_isect_range", &naive_bvh_isect_range<double>,
+        "intersction test", "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a,
+        "mindist"_a);
+
+  m.def("bvh_slide", &bvh_slide<float>, "slide into contact", "bvh1"_a,
+        "bvh2"_a, "pos1"_a, "pos2"_a, "rad"_a, "dirn"_a);
   m.def("bvh_slide", &bvh_slide<double>, "slide into contact", "bvh1"_a,
+        "bvh2"_a, "pos1"_a, "pos2"_a, "rad"_a, "dirn"_a);
+  m.def("bvh_slide_vec", &bvh_slide_vec<float>, "slide into contact", "bvh1"_a,
         "bvh2"_a, "pos1"_a, "pos2"_a, "rad"_a, "dirn"_a);
   m.def("bvh_slide_vec", &bvh_slide_vec<double>, "slide into contact", "bvh1"_a,
         "bvh2"_a, "pos1"_a, "pos2"_a, "rad"_a, "dirn"_a);
@@ -1203,15 +1238,23 @@ PYBIND11_MODULE(_bvh, m) {
   // m.def("bvh_slide_32bit", &bvh_slide<float>, "slide into contact",
   // "bvh1"_a, "bvh2"_a, "pos1"_a, "pos2"_a, "rad"_a, "dirn"_a);
 
+  m.def("bvh_collect_pairs", &bvh_collect_pairs<float>);
   m.def("bvh_collect_pairs", &bvh_collect_pairs<double>);
+  m.def("bvh_collect_pairs_vec", &bvh_collect_pairs_vec<float, float>);
+  m.def("bvh_collect_pairs_vec", &bvh_collect_pairs_vec<float, double>);
   m.def("bvh_collect_pairs_vec", &bvh_collect_pairs_vec<double, float>);
   m.def("bvh_collect_pairs_vec", &bvh_collect_pairs_vec<double, double>);
+  m.def("naive_collect_pairs", &naive_collect_pairs<float>);
   m.def("naive_collect_pairs", &naive_collect_pairs<double>);
+  m.def("bvh_count_pairs", &bvh_count_pairs<float>);
   m.def("bvh_count_pairs", &bvh_count_pairs<double>);
+  m.def("bvh_count_pairs_vec", &bvh_count_pairs_vec<float>);
   m.def("bvh_count_pairs_vec", &bvh_count_pairs_vec<double>);
 
+  m.def("bvh_print", &bvh_print<float>);
   m.def("bvh_print", &bvh_print<double>);
 
+  m.def("bvh_min_dist_one", &bvh_min_dist_one<float>);
   m.def("bvh_min_dist_one", &bvh_min_dist_one<double>);
 
   Vx<int> lb0(1), ub0(1);
@@ -1223,6 +1266,14 @@ PYBIND11_MODULE(_bvh, m) {
         "nasym1"_a = -1, "lb2"_a = lb0, "ub2"_a = ub0, "nasym2"_a = -1);
   m.def("bvh_collect_pairs_range_vec",
         &bvh_collect_pairs_range_vec<double, double>, "bvh1"_a, "bvh2"_a,
+        "pos1"_a, "pos2"_a, "maxdist"_a, "lb1"_a = lb0, "ub1"_a = ub0,
+        "nasym1"_a = -1, "lb2"_a = lb0, "ub2"_a = ub0, "nasym2"_a = -1);
+  m.def("bvh_collect_pairs_range_vec",
+        &bvh_collect_pairs_range_vec<float, float>, "bvh1"_a, "bvh2"_a,
+        "pos1"_a, "pos2"_a, "maxdist"_a, "lb1"_a = lb0, "ub1"_a = ub0,
+        "nasym1"_a = -1, "lb2"_a = lb0, "ub2"_a = ub0, "nasym2"_a = -1);
+  m.def("bvh_collect_pairs_range_vec",
+        &bvh_collect_pairs_range_vec<float, double>, "bvh1"_a, "bvh2"_a,
         "pos1"_a, "pos2"_a, "maxdist"_a, "lb1"_a = lb0, "ub1"_a = ub0,
         "nasym1"_a = -1, "lb2"_a = lb0, "ub2"_a = ub0, "nasym2"_a = -1);
 }
