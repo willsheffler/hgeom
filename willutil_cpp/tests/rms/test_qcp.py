@@ -208,7 +208,7 @@ def test_qcp_align(niter=20, npts=50):
       assert np.allclose(x[:3, 3], T, atol=1e-4)
 
 def test_qcp(niter=100, npts=50):
-   for i in range(niter):
+   for _ in range(niter):
       pts1 = wu.homog.hrandpoint(npts)
       pts2 = wu.homog.hrandpoint(npts)
       rms, fit, x = wu.homog.hrmsfit(pts1, pts2)
