@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 project(hgeom LANGUAGES CXX)
 
-set(CMAKE_C_COMPILER_LAUNCHER "ccache")
-set(CMAKE_CXX_COMPILER_LAUNCHER "ccache")
+# set(CMAKE_C_COMPILER_LAUNCHER "ccache")
+# set(CMAKE_CXX_COMPILER_LAUNCHER "ccache")
 
 # Enable C++17 standard
 set(CMAKE_CXX_STANDARD 17)
@@ -11,8 +11,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-w)
 
 # Find Python and pybind11
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 REQUIRED)
+# find_package(Python COMPONENTS Interpreter Development )
+# if(NOT Python_FOUND)
+set(Python_EXECUTABLE "/opt/python/cp39-cp39/bin/python")
+set(Python_INCLUDE_DIR "/opt/python/cp39-cp39/include/python3.9")
+set(Python_LIBRARIES "/opt/python/cp39-cp39/lib/libpython3.9.so")
+# endif()
 
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/hgeom/extern)

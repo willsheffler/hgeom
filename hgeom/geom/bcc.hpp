@@ -7,6 +7,14 @@
 
 #include <iostream>
 
+#include <cstdint>
+
+#if defined(__SIZEOF_INT128__)
+typedef __int128 bigint;
+#else
+typedef int64_t bigint;
+#endif
+
 namespace hgeom {
 /**
 \namespace hgeom::geom
@@ -65,13 +73,13 @@ struct BCC {
     width_ = (upper - lower_) / nside_.template cast<F>();
     half_width_ = width_ / 2.0;
     lower_cen_ = lower_ + half_width_;
-    __int128 totsize = 2;
+    bigint totsize = 2;
     for (size_t i = 0; i < DIM; ++i) {
       if (sizes[i] > 18446744073709551)
         throw std::invalid_argument(
             "I Type is too narrow, are you passing negative vals?");
-      totsize *= __int128(nside_[i]);
-      if (totsize > __int128(std::numeric_limits<I>::max())) {
+      totsize *= bigint(nside_[i]);
+      if (totsize > bigint(std::numeric_limits<I>::max())) {
         for (int i = 0; i < DIM; ++i)
           std::cout << i << " " << nside_[i] << std::endl;
         throw std::invalid_argument("I Type is too narrow");

@@ -1,18 +1,20 @@
 import os
 import nox
 
-nox.options.sessions = ["test_matrix"]
+nox.options.sessions = ['build']
+# nox.options.sessions = ['test_matrix', 'build']
+sesh = dict(python=["3.9", "3.10", "3.11", "3.12", "3.13"] , venv_backend='uv')
 
-test_matrix_args = ['python', list('3.9 3.10 3.11 3.12 3.13'.split())]
+@nox.session(**sesh)
+def test_matrix(session):
+    print(f'session {session.python}')
+    nprocs = min(8, os.cpu_count() or 1)
+    if session.posargs and (session.python) != session.posargs[0]:
+        session.skip(f"Skipping {session.python} because it's not in posargs {session.posargs}")
 
-@nox.session(venv_backend='uv')
-@nox.parametrize(*test_matrix_args)
-def test_matrix(session, python):
-    """Run tests with different Python versions & extras."""
-    # Allow filtering by passing arguments like: nox -s test_matrix -- 3.11 all
-    if session.posargs and (str(python) != session.posargs[0]):
-        session.skip(f"Skipping {python} because it's not in posargs {session.posargs}")
     session.install('.[dev]')
-    args = ['pytest', f'-n{min(8, os.cpu_count() or 1)}', '--doctest-modules']
-    session.run(*args)
-    session.run('pip', 'wheel', '.')
+    session.run(*f'pytest -n{nprocs} --doctest-modules --pyargs hgeom'.split())
+
+@nox.session(**sesh)
+def build(session):
+    session.run(*'uv build .'.split())

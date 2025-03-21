@@ -4,30 +4,31 @@ build-backend = 'scikit_build_core.build'
 
 [project]
 name = 'hgeom'
-version = '2.0.1'
-requires-python = '>=3.9'
+version = '2.0.3'
+requires-python = '>=3.8'
 dependencies = [
     'numpy',
 ]
 [project.optional-dependencies]
 dev = [
+    'pip',
     'pytest',
     'pytest-xdist',
 ]
 
-[tool.cibuildwheel]
-build-verbosity = 1
-skip = "pp* *-musllinux*"
+# [tool.cibuildwheel]
+# build-verbosity = 1
+# skip = "pp* *-musllinux*"
 
-[tool.cibuildwheel.linux]
-before-build = "yum install -y python3-devel"
-environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=/opt/python/cp39-cp39/" }
+# [tool.cibuildwheel.linux]
+# before-build = "yum install -y python3-devel"
+# environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=/opt/python/cp39-cp39/" }
 
-[tool.cibuildwheel.windows]
-environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=${env:PYTHON}" }
+# [tool.cibuildwheel.windows]
+# environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=${env:PYTHON}" }
 
-[tool.cibuildwheel.macos]
-environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=$(python3 -c 'import sys; print(sys.prefix)')" }
+# [tool.cibuildwheel.macos]
+# environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=$(python3 -c 'import sys; print(sys.prefix)')" }
 
 
 [tool.yapf]
