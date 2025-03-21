@@ -15,3 +15,4 @@ def test_matrix(session, python):
     session.install('.[dev]')
     args = ['pytest', f'-n{min(8, os.cpu_count() or 1)}', '--doctest-modules']
     session.run(*args)
+    session.run('pip', 'wheel', '.')
