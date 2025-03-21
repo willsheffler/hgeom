@@ -1,13 +1,58 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11"]
-build-backend = "scikit_build_core.build"
+requires = ['scikit-build-core', 'pybind11', 'cibuildwheel']
+build-backend = 'scikit_build_core.build'
 
 [project]
-name = "willutil_cpp"
-version = "2.0.1"
+name = 'hgeom'
+version = '2.0.1'
 requires-python = '>=3.9'
 dependencies = [
     'numpy',
+]
+[project.optional-dependencies]
+dev = [
     'pytest',
+    'pytest-xdist',
 ]
 
+[tool.cibuildwheel]
+build-verbosity = 1
+skip = "pp* *-musllinux*"
+
+[tool.cibuildwheel.linux]
+before-build = "yum install -y python3-devel"
+environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=/opt/python/cp39-cp39/" }
+
+[tool.cibuildwheel.windows]
+environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=${env:PYTHON}" }
+
+[tool.cibuildwheel.macos]
+environment = { CMAKE_ARGS = "-DPython_ROOT_DIR=$(python3 -c 'import sys; print(sys.prefix)')" }
+
+
+[tool.yapf]
+based_on_style = 'pep8'
+indent_width = 4
+column_limit = 111
+blank_line_before_nested_class_or_def = true
+blank_lines_around_top_level_definition = 1
+arithmetic_precedence_indication = true
+
+[tool.ruff]
+lint.ignore = [
+   'E731', #  [ ] Do not assign a `lambda` expression, use a `def`
+   'E402', #  [ ] Module level import not at top of file
+   'E741', #  [ ] Ambiguous variable name: `I`
+   'E701', #  [ ] Multiple statements on one line (colon)
+   'F403', #  [ ] `from Attention_module import *` used; unable to detect undefined names
+   'F405',
+   'F821',
+   'F841',
+
+]
+lint.dummy-variable-rgx = '^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|ic)$'
+line-length = 113
+target-version = 'py39'
+format.quote-style = 'single'
+format.indent-style = 'space'
+format.docstring-code-format = true

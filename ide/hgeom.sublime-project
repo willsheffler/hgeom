@@ -1,0 +1,50 @@
+{
+    "folders":
+    [
+        {
+            "path": "..",
+            "folder_exclude_patterns":
+            [
+                "Eigen"
+            ]
+        }
+    ],
+    "settings":
+     {
+        "PyYapf":{
+         "yapf_command": "yapf",
+         "on_save": false
+         // "yapf_command": "/home/sheffler/src/willutil/willutil/app/codealign",
+        },
+        "project_environment": {
+            "env": {
+                "PYTHON": "/home/sheffler/sw/MambaForge/envs/wcpp/bin/python",
+                // "PYTHON": "/home/sheffler/sw/MambaForge/envs/wu/bin/python",
+                "QT_QPA_PLATFORM": "xcb"
+            }
+        }
+    },
+    "build_systems":
+    [
+        {
+            "name": "tmp build",
+            "shell_cmd": "(cd /tmp; mamba activate wcpp; pip uninstall -y hgeom; pip install ~/hgeom; python -mpytest --pyargs hgeom) 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
+            "name": "uv run pytest",
+            "shell_cmd": "mkdir -p /tmp/hgeom; cd /tmp/hgeom; uv pip install --upgrade /home/sheffler/hgeom; uv run pytest /home/sheffler/hgeom 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
+            "name": "pytest all",
+            "shell_cmd": "cd $folder; PYTHONPATH=. \\$PYTHON -m pytest hgeom/tests -x 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
+            "name": "ipd runtestfile",
+            "shell_cmd": "cd $folder; PYTHONPATH=.  \\$PYTHON -m ipd.tools.run_tests_on_file hgeom hgeom/tests/bvh/bvh.cpp 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        }
+    ]
+}
