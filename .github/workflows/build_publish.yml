@@ -12,10 +12,10 @@ on:
       - published
 
 jobs:
+  continue-on-error: true
   build_wheels:
     name: Build wheels for ${{ matrix.os }}
     runs-on: ${{ matrix.runs-on }}
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:

@@ -13,7 +13,8 @@ def test_matrix(session):
     nprocs = min(8, os.cpu_count() or 1)
     if session.posargs and (session.python) != session.posargs[0]:
         session.skip(f"Skipping {session.python} because it's not in posargs {session.posargs}")
-    run(session, 'uv pip install pip pytest pytest-xdist numpy')
+    run(session, 'uv venv')
+    run(session, 'uv pip install pytest pytest-xdist numpy')
     run(session, 'uv pip install --no-index --find-links=wheelhouse hgeom[dev]')
     if len(session.posargs) > 1:
         files = session.posargs[1:]
