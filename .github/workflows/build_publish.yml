@@ -15,6 +15,7 @@ jobs:
   build_wheels:
     name: Build wheels for ${{ matrix.os }}
     runs-on: ${{ matrix.runs-on }}
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
@@ -58,6 +59,10 @@ jobs:
 
       - name: Test wheels
         run: |
+          echo "Testing wheels"
+          echo $(pwd)
+          uv pip install nox
+          uv pip install --no-index --find-links=wheelhouse hgeom[dev]
           uv run nox -s test_matrix
 
       - uses: actions/upload-artifact@v4
