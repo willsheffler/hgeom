@@ -4,17 +4,20 @@ import os
 # sys.path.append(os.path.dirname(__file__))  # no clue why this is needed
 # from ._bvh_nd import *
 
-from ._bcc import *
 from ._bvh import *
 from ._cookie_cutter import *
 from ._expand_xforms import *
-from ._line_align import *
-from ._phmap import *
-from ._qcp import *
+from ._xform_dist import *
+
+from ._bcc import *
 from ._xbin import *
 from ._xbin_util import *
-from ._xform_dist import *
-from ._xform_dist import *
+
+from ._phmap import *
+from ._qcp import *
+
+from ._line_align import *
+from ._py_token_align import *
 
 # sys.path.pop()
 

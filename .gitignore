@@ -10,3 +10,6 @@ cmake_install.cmake
 uv.lock
 *.whl
 __pycache__
+hgeom/.ninja_deps
+hgeom/.ninja_log
+hgeom/build.ninja

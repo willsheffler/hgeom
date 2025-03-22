@@ -28,13 +28,13 @@ class TestIdentifyFormattedBlocks(unittest.TestCase):
     def test_strange_cases(self):
         assert self.obj.mark_formtted_blocks('', threshold=0.99) == ''
         assert self.obj.mark_formtted_blocks('\n', threshold=0.99) == ''
-        assert self.obj.mark_formtted_blocks('\n\n', threshold=0.99)
+        assert self.obj.mark_formtted_blocks('\n\n', threshold=0.99) == '\n'
         assert self.obj.mark_formtted_blocks('========', threshold=0.99)
         assert self.obj.mark_formtted_blocks('========\n========', threshold=0.99)
         assert self.obj.mark_formtted_blocks('========\n========\n', threshold=0.99)
         assert self.obj.unmark('') == ''
         assert self.obj.unmark('\n') == ''
-        assert self.obj.unmark('\n\n')
+        assert self.obj.unmark('\n\n') == ''
         assert self.obj.unmark('========')
         assert self.obj.unmark('========\n========')
         assert self.obj.unmark('========\n========\n')
@@ -74,6 +74,96 @@ c
         result = self.obj.mark_formtted_blocks(code, threshold=2)
         self.assertIn("#             fmt: off", result)
         self.assertIn("#             fmt: on", result)
+
+    def test_whitespace(self):
+        # Test that the function handles leading/trailing whitespace correctly.
+        code = "    line one\n\n\n\n    line two"
+        result = self.obj.unmark(code)
+        assert len(result.split('\n')) == 3
+
+    def test_inline_blocks_are_marked(self):
+        # Test that inline blocks are marked correctly.
+        code = """
+        def example_function(): foo
+            if True: False
+                class Banana: ...
+        elif bar: baz
+            else: qux
+        """
+        result = self.obj.mark_formtted_blocks(code, threshold=2)
+        assert result == """
+        #             fmt: off
+        def example_function(): foo
+        #             fmt: on
+            #             fmt: off
+            if True: False
+            #             fmt: on
+                #             fmt: off
+                class Banana: ...
+                #             fmt: on
+        #             fmt: off
+        elif bar: baz
+        #             fmt: on
+            #             fmt: off
+            else: qux
+            #             fmt: on
+        """
+
+    def test_inline_blocks_are_marked2(self):
+        # Test that inline blocks are marked correctly.
+        code = """
+        print('foo')
+
+        def example_function(): foo
+            dummy
+            if True: False
+
+                dummy2
+                class Banana: ...
+        elif bar: baz
+            else: qux
+        aaaa
+        """
+        result = self.obj.mark_formtted_blocks(code, threshold=2)
+        assert result == """
+        print('foo')
+
+        #             fmt: off
+        def example_function(): foo
+        #             fmt: on
+            dummy
+            #             fmt: off
+            if True: False
+            #             fmt: on
+
+                dummy2
+                #             fmt: off
+                class Banana: ...
+                #             fmt: on
+        #             fmt: off
+        elif bar: baz
+        #             fmt: on
+            #             fmt: off
+            else: qux
+            #             fmt: on
+        aaaa
+        """
+
+    def test_multiline_is_ignored(self):
+        # Test that inline blocks are marked correctly.
+        code = """
+        if a: return b \\
+        else: return c
+        for a in b: c
+        """
+        result = self.obj.mark_formtted_blocks(code, threshold=4)
+        assert result == """
+        if a: return b \\
+        else: return c
+        #             fmt: off
+        for a in b: c
+        #             fmt: on
+        """
 
 if __name__ == "__main__":
     main()

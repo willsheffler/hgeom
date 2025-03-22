@@ -18,7 +18,9 @@
         },
         "project_environment": {
             "env": {
-                "PYTHON": "/home/sheffler/sw/MambaForge/envs/wcpp/bin/python",
+                "PYTHON": "/home/sheffler/sw/MambaForge/envs/ipd/bin/python",
+                "PYTEST": "/home/sheffler/sw/MambaForge/envs/ipd/bin/pytest",
+                "PIP": "/home/sheffler/sw/MambaForge/envs/ipd/bin/pip",
                 // "PYTHON": "/home/sheffler/sw/MambaForge/envs/wu/bin/python",
                 "QT_QPA_PLATFORM": "xcb"
             }
@@ -26,6 +28,27 @@
     },
     "build_systems":
     [
+        {
+            "name": "pytest file",
+            "shell_cmd": "cd $folder/hgeom; (ninja -j8 && cd .. && PYTHONPATH=. \\$PYTEST hgeom/tests/align/*.py) 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
+            "name": "install and pytest file",
+            "shell_cmd": "cd $folder; (\\$PIP uninstall -y hgeom && \\$PIP install .[dev] && \\$PYTHON -m pytest $file) 2>&1 | tee $folder/ide/sublime_build.log",
+            // "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+            "file_regex": "^\\s*(.+?):(\\d+):(\\d+): error:"
+        },
+        {
+            "name": "nox",
+            "shell_cmd": "cd $folder; nox 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
+        {
+            "name": "nox files",
+            "shell_cmd": "cd $folder; uv pip install pip pytest pytest-xdist numpy; uv pip install --no-index --find-links=wheelhouse hgeom[dev]; uv run pytest $file 2>&1 | tee $folder/ide/sublime_build.log",
+            "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
+        },
         {
             "name": "tmp build",
             "shell_cmd": "(cd /tmp; mamba activate wcpp; pip uninstall -y hgeom; pip install ~/hgeom; python -mpytest --pyargs hgeom) 2>&1 | tee $folder/ide/sublime_build.log",
@@ -37,13 +60,13 @@
             "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
         },
         {
-            "name": "pytest all",
-            "shell_cmd": "cd $folder; PYTHONPATH=. \\$PYTHON -m pytest hgeom/tests -x 2>&1 | tee $folder/ide/sublime_build.log",
+            "name": "pytest ",
+            "shell_cmd": "cd $folder; \\$PYTHON -m pytest hgeom/tests/align/test_line_align.py 2>&1 | tee $folder/ide/sublime_build.log",
             "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
         },
         {
             "name": "ipd runtestfile",
-            "shell_cmd": "cd $folder; PYTHONPATH=.  \\$PYTHON -m ipd.tools.run_tests_on_file hgeom hgeom/tests/bvh/bvh.cpp 2>&1 | tee $folder/ide/sublime_build.log",
+            "shell_cmd": "cd $folder; PYTHONPATH=. ipd.ools.run_tests_on_file hgeom $file 2>&1 | tee $folder/ide/sublime_build.log",
             "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
         }
     ]

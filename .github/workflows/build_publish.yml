@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     strategy:
       matrix:
-        os: [ linux-intel, linux-arm, windows, macOS-intel, macOS-arm, iOS, pyodide ]
+        os: [ linux-intel, linux-arm, windows, macOS-intel, macOS-arm ]
         include:
           - archs: auto
             platform: auto
@@ -48,6 +48,16 @@ jobs:
         #   package-dir: .
         #   output-dir: wheelhouse
         #   config-file: "{package}/pyproject.toml"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.6.8"
+          enable-cache: true
+
+      - name: Test wheels
+        run: |
+          uv run nox -s test_matrix
 
       - uses: actions/upload-artifact@v4
         with:

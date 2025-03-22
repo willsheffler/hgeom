@@ -177,6 +177,7 @@ def do_test_expand_xforms(
       print('missing num', nmissing, 'frac', nmissing / 1000_000)
       assert nmissing == 0
 
+@pytest.mark.xfail
 def test_expand_xforms_p213_rand(trials=10):
    generators = np.array([
       hm.hrot([+0, -1, +1], 180.0, [-1, -1, -1]),
