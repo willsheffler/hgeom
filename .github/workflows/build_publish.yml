@@ -12,9 +12,9 @@ on:
       - published
 
 jobs:
-  continue-on-error: true
   build_wheels:
     name: Build wheels for ${{ matrix.os }}
+    always: true
     runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
@@ -72,6 +72,7 @@ jobs:
 
   build_sdist:
     name: Build source distribution
+    always: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -86,6 +87,7 @@ jobs:
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
+    always: true
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
