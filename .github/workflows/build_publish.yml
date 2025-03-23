@@ -60,6 +60,7 @@ jobs:
         run: |
           echo "Testing wheels"
           echo $(pwd)
+          uv venv
           uv pip install nox
           uv pip install --no-index --find-links=wheelhouse hgeom[dev]
           uv run nox -s test_matrix

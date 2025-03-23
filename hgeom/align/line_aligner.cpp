@@ -383,15 +383,15 @@ class IdentifyFormattedBlocks {
         for (size_t i = 1; i < lines.size(); i++) {
             if (is_multiline(lines[i - 1]) || is_multiline(lines[i])) {
                 maybe_close_formatted_block();
-                cout << "multi " << lines[i] << endl;
+                // cout << "multi " << lines[i] << endl;
                 output.push_back(lines[i]);
                 scores.push_back(0.0f);
                 continue;
             }
             string i_indent = get_indentation(lines[i]);
-            if (not in_formatted_block and is_oneline_statement(lines[i])) {
+            if (!in_formatted_block && is_oneline_statement(lines[i])) {
                 maybe_close_formatted_block();
-                cout << "single " << lines[i] << endl;
+                // cout << "single " << lines[i] << endl;
                 output.push_back(i_indent + "#             fmt: off");
                 output.push_back(lines[i]);
                 output.push_back(i_indent + "#             fmt: on");
@@ -400,7 +400,7 @@ class IdentifyFormattedBlocks {
             }
             scores.push_back(compute_similarity_score(lines[i - 1], lines[i]));
             if (scores.back() >= threshold) {
-                cout << "block " << scores.back() << " " << lines[i] << endl;
+                // cout << "block " << scores.back() << " " << lines[i] << endl;
                 consecutive_high_scores++;
                 if (consecutive_high_scores >= 1 && !in_formatted_block) {
                     in_formatted_block = true;
@@ -410,7 +410,7 @@ class IdentifyFormattedBlocks {
                 }
             } else {
                 maybe_close_formatted_block();
-                cout << "noblk " << lines[i] << endl;
+                // cout << "noblk " << lines[i] << endl;
             }
             output.push_back(lines[i]);
         }
@@ -424,14 +424,14 @@ class IdentifyFormattedBlocks {
         string indent = "!!";
         for (size_t i = lines.size(); i > 0; --i) {
             if (scores[i] >= threshold) {
-                if (at_end) cout << "at_end ";
-                cout << "last block " << lines[i] << endl;
+                // if (at_end) cout << "at_end ";
+                // cout << "last block " << lines[i] << endl;
                 indent = get_indentation(lines[i]);
                 break;
             }
         }
         output.push_back(indent + "#             fmt: on");
-        cout << "block closed" << endl;
+        // cout << "block closed" << endl;
     }
 };
 
