@@ -22,16 +22,6 @@ find_package(pybind11 REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/hgeom/extern)
 
-pybind11_add_module(_line_align MODULE hgeom/align/line_aligner.cpp)
-set_target_properties(_line_align PROPERTIES PREFIX "" OUTPUT_NAME "_line_align" )
-target_link_libraries(_line_align PRIVATE pybind11::module)
-install(TARGETS _line_align; DESTINATION hgeom)
-
-pybind11_add_module(_py_token_align MODULE hgeom/align/py_token_align.cpp)
-set_target_properties(_py_token_align PROPERTIES PREFIX "" OUTPUT_NAME "_py_token_align" )
-target_link_libraries(_py_token_align PRIVATE pybind11::module)
-install(TARGETS _py_token_align; DESTINATION hgeom)
-
 pybind11_add_module(_bvh MODULE hgeom/bvh/bvh.cpp)
 set_target_properties(_bvh PROPERTIES PREFIX "" OUTPUT_NAME "_bvh" )
 target_link_libraries(_bvh PRIVATE pybind11::module)

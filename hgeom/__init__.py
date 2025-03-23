@@ -16,9 +16,6 @@ from ._xbin_util import *
 from ._phmap import *
 from ._qcp import *
 
-from ._line_align import *
-from ._py_token_align import *
-
 # sys.path.pop()
 
 from . import homog
