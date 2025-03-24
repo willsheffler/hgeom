@@ -939,10 +939,10 @@ def helper_test_bvh_isect_range_ids(Bvh):
 
 
         lb, ub = wu.bvh_isect_range(bvh1, bvh2, pos1, pos2, mindist)
-        pos1 = pos1[lb != -1]
-        pos2 = pos2[lb != -1]
-        ub = ub[lb != -1]
-        lb = lb[lb != -1]
+        pos1 = np.ascontiguousarray(pos1[lb != -1])
+        pos2 = np.ascontiguousarray(pos2[lb != -1])
+        ub = np.ascontiguousarray(ub[lb != -1])
+        lb = np.ascontiguousarray(lb[lb != -1])
 
         # print(lb, ub)
 

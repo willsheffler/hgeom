@@ -51,5 +51,5 @@ def select_wheel(session):
         tags = parse_wheel_tags(wheel)
         if tags and tags in supported:
             picks.append(wheel)
-    assert picks
+    assert picks, f'No supported wheels found in {wheels}'
     return picks[0]
