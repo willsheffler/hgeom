@@ -30,7 +30,7 @@
     [
         {
             "name": "pytest file",
-            "shell_cmd": "cd $folder/hgeom; (ninja -j8 && cd .. && PYTHONPATH=. \\$PYTEST hgeom/tests/align/*.py) 2>&1 | tee $folder/ide/sublime_build.log",
+            "shell_cmd": "cd $folder/hgeom; (ninja -j8 && cd .. && PYTHONPATH=. \\$PYTEST hgeom/tests) 2>&1 | tee $folder/ide/sublime_build.log",
             "file_regex": "^\\s*File \"(...*?)\", line ([0-9]*)"
         },
         {
