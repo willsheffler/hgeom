@@ -50,7 +50,7 @@ lint.ignore = [
    'F841',
 
 ]
-lint.dummy-variable-rgx = '^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|ic)$'
+lint.dummy-variable-rgx = '^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|print)$'
 line-length = 113
 target-version = 'py39'
 format.quote-style = 'single'

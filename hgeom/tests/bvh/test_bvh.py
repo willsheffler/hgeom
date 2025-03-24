@@ -734,7 +734,7 @@ def test_collect_pairs_range_sym():
             assert n_filtpairerr <= 1
 
         except AssertionError as e:
-            ic(f'test_collect_pairs_range_sym fail {trial}')
+            print(f'test_collect_pairs_range_sym fail {trial}')
             # give this test two tries... rarely fails so ok
             # should probably check first fail is known one
             if trial == 3:

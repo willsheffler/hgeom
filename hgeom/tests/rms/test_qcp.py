@@ -68,10 +68,10 @@ def test_qcp_regions_simple_1seg():
    # pts1[:100] = pts1[:100] * 0.01 + pts2 * 0.99
    offsets = np.arange(10).reshape(10, 1)
    # offsets = np.tile(offsets, (170_000, 1))
-   # ic(offsets.shape)
+   # print(offsets.shape)
    # with wu.Timer():
    rms = qcp_rms_regions_f4i4(pts1, pts2, [N], offsets)
-   # ic(rms)
+   # print(rms)
    for i in range(10):
       rmsref = qcp_rms_double(pts1[i:N + i], pts2)
       assert rms.shape == (len(offsets), )
@@ -181,8 +181,8 @@ def test_qcp_regions_junct_simple():
    offsets = [[0]]
    rmsref = compute_rms_offsets_brute(pts1, pts2, sizes, offsets, junct=4)
    rms = qcp_rms_regions_f4i4(pts1, pts2, sizes, offsets, junct=4)
-   # ic(rmsref)
-   # ic(rms)
+   # print(rmsref)
+   # print(rms)
    assert np.allclose(rms, rmsref)
 
 def test_qcp_regions_junct():

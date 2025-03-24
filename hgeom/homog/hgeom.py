@@ -71,7 +71,7 @@ def hdist(x, y):
    shape2 = y.shape[:-2]
    a = x.reshape(shape1 + (1, ) * len(shape1) + (4, 4))
    b = y.reshape((1, ) * len(shape2) + shape2 + (4, 4))
-   ic(a.shape, b.shape)
+   print(a.shape, b.shape)
    dist = np.linalg.norm(a[..., :, 3] - b[..., :, 3], axis=-1)
    return dist
 
@@ -151,12 +151,12 @@ def hxform(x, stuff, homogout='auto', **kw):
       result = result[..., :3]
 
    if result.shape[-1] == 4 and not hvalid(result, **kw):
-      ic(x.shape)
-      ic(stuff.shape)
-      # ic(result)
+      print(x.shape)
+      print(stuff.shape)
+      # print(result)
       for x in result:
          if not hvalid(x, **kw):
-            ic(x)
+            print(x)
             assert 0
       # this is a bad copout.. should make this check handle nans correctly
       if not stuff.shape[-2:] == (4, 1):
@@ -164,7 +164,7 @@ def hxform(x, stuff, homogout='auto', **kw):
                           'if passing points, try is_points=True')
 
    if orig:
-      # ic(result.shape)
+      # print(result.shape)
       if result.ndim > 2:
          r = list()
          for x in result:
@@ -212,7 +212,7 @@ def _hxform_impl(x, stuff, outerprod='auto', flat=False, is_points='auto', impro
       if outerprod:
          shape1 = x.shape[:-2]
          shape2 = stuff.shape[:-2]
-         # ic(x.shape, stuff.shape, shape1, shape2)
+         # print(x.shape, stuff.shape, shape1, shape2)
          a = x.reshape(shape1 + (1, ) * len(shape2) + (4, 4))
 
          b = stuff.reshape((1, ) * len(shape1) + shape2 + (4, 1))
@@ -224,7 +224,7 @@ def _hxform_impl(x, stuff, outerprod='auto', flat=False, is_points='auto', impro
          shape2 = stuff.shape[:-2]
          sameshape = tuple()
          for i, (s1, s2) in enumerate(zip(shape1, shape2)):
-            # ic(s1, s2)
+            # print(s1, s2)
             if s1 == s2:
                shape1 = shape1[1:]
                shape2 = shape2[1:]
@@ -233,7 +233,7 @@ def _hxform_impl(x, stuff, outerprod='auto', flat=False, is_points='auto', impro
                break
          newshape1 = sameshape + shape1 + (1, ) * len(shape2) + (4, 4)
          newshape2 = sameshape + (1, ) * len(shape1) + shape2 + (4, 1)
-         # ic(shape1, shape2, newshape1, newshape2)
+         # print(shape1, shape2, newshape1, newshape2)
          a = x.reshape(newshape1)
          b = stuff.reshape(newshape2)
          result = a @ b
@@ -244,7 +244,7 @@ def _hxform_impl(x, stuff, outerprod='auto', flat=False, is_points='auto', impro
          result = result.reshape(-1, 4)
 
       # assert 0
-   # ic('result', result.shape)
+   # print('result', result.shape)
    return result
 
 def is_valid_quat_rot(quat):
@@ -256,10 +256,10 @@ def quat_to_upper_half(quat):
    ineg1 = (quat[..., 0] == 0) * (quat[..., 1] < 0)
    ineg2 = (quat[..., 0] == 0) * (quat[..., 1] == 0) * (quat[..., 2] < 0)
    ineg3 = ((quat[..., 0] == 0) * (quat[..., 1] == 0) * (quat[..., 2] == 0) * (quat[..., 3] < 0))
-   # ic(ineg0.shape)
-   # ic(ineg1.shape)
-   # ic(ineg2.shape)
-   # ic(ineg3.shape)
+   # print(ineg0.shape)
+   # print(ineg1.shape)
+   # print(ineg2.shape)
+   # print(ineg3.shape)
    ineg = ineg0 + ineg1 + ineg2 + ineg3
    quat = quat.copy()
    quat[ineg] = -quat[ineg]
@@ -404,20 +404,20 @@ def axis_of(xforms, tol=1e-7, debug=False):
       eigval_is_1 = np.abs(eigval - 1) < 1e-6
       ixform, ieigval = np.where(eigval_is_1)
 
-      # ic(ixform)
-      # ic(ieigval)
+      # print(ixform)
+      # print(ieigval)
       try:
          axs[is180, :3] = eigvec[ixform, :, ieigval]
       except Exception as e:
 
-         # ic(is_ident)
-         # ic(is180)
-         # ic(x180.shape)
+         # print(is_ident)
+         # print(is180)
+         # print(x180.shape)
          # for a, b, c in zip(eigval, eigvec, eigval_is_1):
-         # ic(a)
-         # ic(b)
-         # ic(c)
-         # ic()
+         # print(a)
+         # print(b)
+         # print(c)
+         # print()
          raise e
       # assert 0
 
@@ -440,7 +440,7 @@ def hunique(xforms):
    if len(xforms) == 0: return True
    diff = hdiff(xforms, xforms)
    np.fill_diagonal(diff, 9e9)
-   # ic(diff.shape, np.min(diff))
+   # print(diff.shape, np.min(diff))
    return 0.0001 < np.min(diff)
 
 def axis_angle_of(xforms, debug=False):
@@ -526,11 +526,11 @@ def hrot(axis, angle=None, center=None, dtype='f8', hel=0.0, **kw):
       center = np.tile(center, rshape[:-2] + (1, ) * len(cshape))
       assert center.ndim == 3
       center = center.swapaxes(0, 1)
-      # ic(r.shape)
-      # ic(center.shape)
+      # print(r.shape)
+      # print(center.shape)
       # x, y, z = center[..., 0], center[..., 1], center[..., 2]
-      # ic(x.shape)
-      # ic(r[..., 0, 3].shape)
+      # print(x.shape)
+      # print(r[..., 0, 3].shape)
       # assert 0
    x, y, z = center[..., 0], center[..., 1], center[..., 2]
    r[..., 0, 3] = x - r[..., 0, 0] * x - r[..., 0, 1] * y - r[..., 0, 2] * z
@@ -848,17 +848,17 @@ def hrmsfit(mobile, target):
    target_cen = np.mean(target, axis=0)
    mobile = mobile - mobile_cen
    target = target - target_cen
-   # ic(mobile.shape)
-   # ic(target.shape[-1] in (3, 4))
+   # print(mobile.shape)
+   # print(target.shape[-1] in (3, 4))
    covariance = mobile.T[:3] @ target[:, :3]
    V, S, W = np.linalg.svd(covariance)
    if 0 > np.linalg.det(V) * np.linalg.det(W):
       S = np.array([S[0], S[1], -S[2]], dtype=S.dtype)
       # S[-1] = -S[-1]
-      # ic(S - S1)
+      # print(S - S1)
       V = np.concatenate([V[:, :-1], -V[:, -1, None]], axis=1)
       # V[:, -1] = -V[:, -1]
-      # ic(V - V1)
+      # print(V - V1)
       # assert 0
    rot_m2t = hconvert(V @ W).T
    trans_m2t = target_cen - rot_m2t @ mobile_cen
@@ -1019,7 +1019,7 @@ def axis_ang_cen_of_planes(xforms, debug=False, ident_match_tol=1e-8):
       plane2 = hray(c2, n2)
       isect, status = intersect_planes(plane1, plane2)
       cen1 = isect[..., :, 0]
-      # ic(cen1)
+      # print(cen1)
 
       if len(cen) == len(cen1):
          cen = cen1
@@ -1062,7 +1062,7 @@ def line_line_closest_points_pa(pt1, ax1, pt2, ax2, verbose=0):
    ax2 = hvec(ax2)
    assert pt1.shape == pt2.shape == ax1.shape == ax2.shape
    # origshape = pt1.shape
-   # ic(pt1.shape)
+   # print(pt1.shape)
    C21 = pt2 - pt1
    M = hcross(ax1, ax2)
    m2 = np.sum(M**2, axis=-1)[..., None]
@@ -1075,14 +1075,14 @@ def line_line_closest_points_pa(pt1, ax1, pt2, ax2, verbose=0):
    Q2 = pt2 - t2 * ax2
 
    if verbose:
-      ic('C21', C21)
-      ic('M', M)
-      ic('m2', m2)
-      ic('R', R)
-      ic('t1', t1)
-      ic('t2', t2)
-      ic('Q1', Q1)
-      ic('Q2', Q2)
+      print('C21', C21)
+      print('M', M)
+      print('m2', m2)
+      print('R', R)
+      print('t1', t1)
+      print('t2', t2)
+      print('Q1', Q1)
+      print('Q2', Q2)
    return Q1, Q2
 
 hlinesisect = line_line_closest_points_pa
@@ -1115,13 +1115,13 @@ def halign(a, b, doto=None):
    if np.allclose(ax, 0): return np.eye(4)
    x = np.tile(np.eye(4), (*ax.shape[:-1], 1, 1))
    ok = ~np.all(np.isclose(ax, 0), axis=-1)
-   # ic(ok.shape, x.shape, a.shape, b.shape)
+   # print(ok.shape, x.shape, a.shape, b.shape)
    if a.ndim > 1: a = a[ok]
    if b.ndim > 1: b = b[ok]
-   # ic(ok.shape, x.shape, a.shape, b.shape)
+   # print(ok.shape, x.shape, a.shape, b.shape)
    tmp = align_around_axis(ax[ok], a, b)
    x[ok] = tmp
-   # ic(x.shape)
+   # print(x.shape)
    return x if doto is None else hxform(x, doto)
 
 def halign2(a1, a2, b1, b2, doto=None, strict=False):
@@ -1137,7 +1137,7 @@ def halign2(a1, a2, b1, b2, doto=None, strict=False):
    Xmiddle = hrot(spinaxis, np.pi)
    Xaround = align_around_axis(baxis, Xmiddle @ a1, b1)
    X = Xaround @ Xmiddle
-   # ic(angle(b1, a1), angle(b2, a2), angle(b1, X @ a1), angle(b2, X @ a2))
+   # print(angle(b1, a1), angle(b2, a2), angle(b1, X @ a1), angle(b2, X @ a2))
    assert (angle(b1, a1) + angle(b2, a2)) + 0.001 >= (angle(b1, X @ a1) + angle(b2, X @ a2))
    return X if doto is None else hxform(X, doto)
 
@@ -1173,15 +1173,15 @@ def rotation_around_dof_for_target_angle(target_angle, dof_angle, fix_to_dof_ang
    l_dof = np.cos(dof_angle)
    h_tgt = np.sin(target_angle)
    l_tgt = np.cos(target_angle)
-   # ic('l_dof', l_dof)
-   # ic('l_tgt', l_tgt)
+   # print('l_dof', l_dof)
+   # print('l_tgt', l_tgt)
    xdof = np.sin(fix_to_dof_angle) * l_dof
    ydof = np.cos(fix_to_dof_angle) * l_dof
    assert np.allclose(np.sqrt(xdof**2 + ydof**2), l_dof)
    ytgt = np.cos(target_angle)
    slope = -np.tan(np.pi / 2 - fix_to_dof_angle)
 
-   # ic('ytgt', ytgt, 'xdof', xdof, 'ydof', ydof)
+   # print('ytgt', ytgt, 'xdof', xdof, 'ydof', ydof)
 
    yhat = ytgt
    xhat = xdof + (ytgt - ydof) * slope
@@ -1199,14 +1199,14 @@ def rotation_around_dof_for_target_angle(target_angle, dof_angle, fix_to_dof_ang
    hhat = np.sqrt(1.0 - lhat**2)
    ahat = np.arcsin(hhat / hdof)
 
-   # ic('xhat', xhat, 'yhat', yhat, 'slope', slope, 'lhat', lhat, 'hhat', hhat, 'ahat', ahat)
+   # print('xhat', xhat, 'yhat', yhat, 'slope', slope, 'lhat', lhat, 'hhat', hhat, 'ahat', ahat)
 
-   # ic('ytgt', ytgt)
-   # ic('xdof', xdof)
-   # ic('ydof', ydof)
-   # ic('xhat', xhat)
-   # ic('yhat', yhat)
-   # ic('ahat', ahat, np.degrees(ahat))
+   # print('ytgt', ytgt)
+   # print('xdof', xdof)
+   # print('ydof', ydof)
+   # print('xhat', xhat)
+   # print('yhat', yhat)
+   # print('ahat', ahat, np.degrees(ahat))
 
    return ahat
 
@@ -1262,23 +1262,23 @@ def align_lines_isect_axis2(pt1, ax1, pt2, ax2, ta1, tp1, ta2, sl2, strict=True)
    else:
       try:
          Xalign = halign2(ax1, ax2, ta1, ta2)
-         # ic(Xalign @ ax1, ta1)
+         # print(Xalign @ ax1, ta1)
          # assert np.allclose(Xalign @ ax1, ta1, atol=0.0001)
          # assert np.allclose(Xalign @ ax2, ta2, atol=0.0001)
-         # ic(Xalign)
+         # print(Xalign)
       except AssertionError as e:
-         ic("halign2 error")
-         ic("   ", ax1)
-         ic("   ", ax2)
-         ic("   ", ta1)
-         ic("   ", ta2)
+         print("halign2 error")
+         print("   ", ax1)
+         print("   ", ax2)
+         print("   ", ta1)
+         print("   ", ta2)
          raise e
       Xalign[..., :, 3] = -Xalign @ pt1  ## move pt1 to origin
       Xalign[..., 3, 3] = 1
       cen2_0 = Xalign @ pt2  # moving pt2 by Xalign
       D = np.stack([ta1[:3], sl2[:3], ta2[:3]]).T
       A1offset, slide_dist, _ = np.linalg.inv(D) @ cen2_0[:3]
-      # ic(A1offset, slide_dist)
+      # print(A1offset, slide_dist)
       Xalign[..., :, 3] = Xalign[..., :, 3] - (A1offset * ta1)
 
    return Xalign, slide_dist
@@ -1295,11 +1295,11 @@ def scale_translate_lines_isect_lines(pt1, ax1, pt2, ax2, tp1, ta1, tp2, ta2):
 
    if abs(angle(_ax1, _ax2) - angle(_ta1, _ta2)) > 0.00001:
       _ta2 = -_ta2
-   # ic(_ax1)
-   # ic(_ax2)
-   # ic(_ta1, ta1)
-   # ic(_ta2)
-   # ic(line_angle(_ax1, _ax2), line_angle(_ta1, _ta2))
+   # print(_ax1)
+   # print(_ax2)
+   # print(_ta1, ta1)
+   # print(_ta2)
+   # print(line_angle(_ax1, _ax2), line_angle(_ta1, _ta2))
    assert np.allclose(line_angle(_ax1, _ax2), line_angle(_ta1, _ta2))
 
    # scale target frame to match input line separation
@@ -1362,9 +1362,9 @@ def scale_translate_lines_isect_lines(pt1, ax1, pt2, ax2, tp1, ta1, tp2, ta2):
    xalign[3, 3] = 1
 
    if np.any(np.isnan(xalign)):
-      ic('=============================')
-      ic(xalign)
-      ic(delta1, delta2)
+      print('=============================')
+      print(xalign)
+      print(delta1, delta2)
 
    # rays = np.array([
    #    hm.hray(xalign @ pt1, xalign @ ax1),
@@ -1390,8 +1390,8 @@ def hmean(xforms):
    idx = np.dot(q, [13, 7, 3, 1]) < 0
    if np.any(idx):
       q[idx] *= -1
-   # ic('hmean')
-   # ic(q)
+   # print('hmean')
+   # print(q)
    # for i in range(10):
    # qmean = np.mean(q, axis=0)
    # dot = hdot(qmean, q)
@@ -1405,7 +1405,7 @@ def hmean(xforms):
    r = quat_to_rot(q)
    t = np.mean(xforms[..., :3, 3], axis=0)
    x = hconstruct(r, t)
-   # ic(x)
+   # print(x)
    return x
 
 def hexpand(
@@ -1446,8 +1446,8 @@ def hpow_int(xform, power):
    return result
 
 def hpow_float(xform, power):
-   # ic('get rot, axis, hel, cen')
-   # ic('interp rot/hel around axis/cen')
+   # print('get rot, axis, hel, cen')
+   # print('interp rot/hel around axis/cen')
    return NotImplemented
 
 def hcom_flat(points):

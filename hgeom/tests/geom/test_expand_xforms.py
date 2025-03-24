@@ -221,7 +221,7 @@ def expand_xforms_radius():
    ])
 
    x, _ = wu.expand_xforms_rand(generators, depth=12, radius=radius, trials=100_000)
-   ic(x.shape)
+   print(x.shape)
    wu.showme(x)
 
 if __name__ == '__main__':
