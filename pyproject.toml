@@ -15,9 +15,9 @@ dev = [
     'pytest-xdist',
 ]
 
-# [tool.cibuildwheel]
+[tool.cibuildwheel]
 # build-verbosity = 1
-# skip = "pp* *-musllinux*"
+skip = ["*-macosx_universal2"]
 
 # [tool.cibuildwheel.linux]
 # before-build = "yum install -y python3-devel"

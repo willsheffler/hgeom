@@ -15,10 +15,12 @@ def test_matrix(session):
     nprocs = min(8, os.cpu_count() or 1)
     if session.posargs and (session.python) != session.posargs[0]:
         session.skip(f"Skipping {session.python} because it's not in posargs {session.posargs}")
-    # session.install(*'pytest pytest-xdist numpy'.split())
-    # session.install(f'{select_wheel(session)}')
-    session.install('.[dev]')
-    run(session, f'pytest -n{nprocs} --doctest-modules hgeom')
+    session.install(*'pytest pytest-xdist numpy'.split())
+    whl = select_wheel(session)
+    print('Installing wheel:', whl)
+    session.install(whl)
+    # session.install('.[dev]')
+    run(session, f'pytest -n{nprocs} --doctest-modules --pyargs hgeom')
 
 def get_supported_tags_session(session):
     result = session.run(
