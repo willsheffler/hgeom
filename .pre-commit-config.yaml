@@ -7,6 +7,8 @@ repos:
       - id: ruff
         args: [--fix]
       - id: ruff-format
+        args: [hgeom]
+        types_or: [ python, pyi ]
 
   # ✅ Validate pyproject.toml metadata and structure
   - repo: https://github.com/abravalheri/validate-pyproject

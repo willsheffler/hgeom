@@ -26,10 +26,7 @@ def get_supported_tags_session(session):
     result = session.run(
         'python',
         '-c',
-        (
-            'from packaging.tags import sys_tags; import json;'
-            'print(json.dumps([str(tag) for tag in sys_tags()]))'
-        ),
+        ('from packaging.tags import sys_tags; import json;print(json.dumps([str(tag) for tag in sys_tags()]))'),
         silent=True,
     )
     result = json.loads(result)
