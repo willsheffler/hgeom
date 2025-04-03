@@ -2,6 +2,8 @@
 # import os
 # sys.path.append(os.path.dirname(__file__))  # no clue why this is needed
 
+__version__ = '2.0.6'
+
 # from ._bvh_nd import *
 from ._bvh import *
 from ._cookie_cutter import *
@@ -17,12 +19,14 @@ from ._qcp import *
 
 # sys.path.pop()
 
-from . import homog
-from .timer import Timer
+from . import homog as homog
+from .timer import Timer as Timer
+
 
 def xform_dist2(*args):
     c, o = xform_dist2_split(*args)
     return c + o
+
 
 BVH = SphereBVH_double
 BVH32 = SphereBVH_float

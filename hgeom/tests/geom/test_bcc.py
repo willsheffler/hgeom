@@ -182,7 +182,7 @@ from hgeom import *
 #          assert rad * 10 + 5 < np.max(dis) < np.sqrt(2) * (rad * 10 + 5.01)
 #          assert np.allclose(radius[rad - 1], np.max(dis))
 
-#def test_bcc_neighbors_6_3():
+# def test_bcc_neighbors_6_3():
 #
 #   cen0 = np.array([[0.0, 0.0, 0.0, 0.5, 0.5, 0.5]])
 #   for bcc in [
@@ -231,7 +231,7 @@ from hgeom import *
 #         # dis = np.linalg.norm(cart - com, axis=1)
 #         # assert np.allclose(np.max(dis), np.sqrt(3) * rad * 10)
 #
-#def test_bcc_neighbors_6_3_extrahalf():
+# def test_bcc_neighbors_6_3_extrahalf():
 #
 #   cen0 = np.array([[0.0, 0.0, 0.0, 0.5, 0.5, 0.5]])
 #   for bcc in [
@@ -280,7 +280,7 @@ from hgeom import *
 #         # dis = np.linalg.norm(cart - com, axis=1)
 #         # assert np.allclose(np.max(dis), np.sqrt(3) * rad * 10)
 #
-#def test_bcc_neighbors_6_3_oddlast3():
+# def test_bcc_neighbors_6_3_oddlast3():
 #
 #   cen0 = np.array([[0.0, 0.0, 0.0, 0.5, 0.5, 0.5]])
 #   for bcc in [
@@ -338,7 +338,7 @@ from hgeom import *
 #         dis = np.linalg.norm(cart - com, axis=1)
 #         assert np.allclose(np.max(dis), np.sqrt(3) * rad * 10)
 #
-#def test_bcc_neighbors_6_3_oddlast3_extrahalf():
+# def test_bcc_neighbors_6_3_oddlast3_extrahalf():
 #   radius = [
 #      0,
 #      27.386127875258307,
@@ -401,7 +401,7 @@ from hgeom import *
 #         assert rad * 10 + 10 < np.max(dis) < np.sqrt(3) * (rad * 10 + 10.01)
 #         assert np.allclose(radius[rad], np.max(dis))
 #
-#def test_bcc_neighbors_6_3_oddlast3_sphere():
+# def test_bcc_neighbors_6_3_oddlast3_sphere():
 #   ntrim = np.array([0, 8, 12 * 8 + 12, 72 * 8 + 3 * 12, 190 * 8 + 3 * 12])
 #   radius = [
 #      0,
@@ -477,7 +477,7 @@ from hgeom import *
 #         assert rad * 10 < np.max(dis) < np.sqrt(2) * rad * 10 + 0.01
 #         assert np.allclose(radius[rad], np.max(dis))
 #
-#def test_bcc_neighbors_6_3_oddlast3_sphere_extrahalf():
+# def test_bcc_neighbors_6_3_oddlast3_sphere_extrahalf():
 #   ntrim = np.array([0, 4 * 8 * 8, 81 * 8, 239 * 8 + 3 * 12, 471 * 8 + 3 * 12])
 #   radius = [
 #      0,
@@ -579,15 +579,15 @@ from hgeom import *
 #       assert np.max(ds) < s
 #       assert c * 0.9 < np.max(dc) < c
 
-if __name__ == "__main__":
-   # test_bcc_neighbors_3()
-   # test_bcc_neighbors_3_sphere()
-   # test_bcc_neighbors_3_exhalf_sphere()
-   # test_bcc_neighbors_6_3()
-   # test_bcc_neighbors_6_3_extrahalf()
-   # test_bcc_neighbors_6_3_oddlast3()
-   # test_bcc_neighbors_6_3_oddlast3_extrahalf()
-   # test_bcc_neighbors_6_3_oddlast3_sphere()
-   # test_bcc_neighbors_6_3_oddlast3_sphere_extrahalf()
-   # test_bcc_neighbor_radius()
-   pass
+if __name__ == '__main__':
+    # test_bcc_neighbors_3()
+    # test_bcc_neighbors_3_sphere()
+    # test_bcc_neighbors_3_exhalf_sphere()
+    # test_bcc_neighbors_6_3()
+    # test_bcc_neighbors_6_3_extrahalf()
+    # test_bcc_neighbors_6_3_oddlast3()
+    # test_bcc_neighbors_6_3_oddlast3_extrahalf()
+    # test_bcc_neighbors_6_3_oddlast3_sphere()
+    # test_bcc_neighbors_6_3_oddlast3_sphere_extrahalf()
+    # test_bcc_neighbor_radius()
+    pass
