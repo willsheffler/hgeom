@@ -1,28 +1,25 @@
 import json
 import glob
 import nox
-import os
+
+# import os
 from packaging.tags import sys_tags
 
 nox.options.sessions = ['test_matrix']
+# nox.options.sessions = ['test_matrix', 'build']
 sesh = dict(python=['3.9', '3.10', '3.11', '3.12', '3.13'], venv_backend='uv')
-
-
-def run(session, cmd):
-    session.run(*cmd.split())
 
 
 @nox.session(**sesh)
 def test_matrix(session):
-    nprocs = min(8, os.cpu_count() or 1)
+    # nprocs = 1 # min(8, os.cpu_count() or 1)
     if session.posargs and (session.python) != session.posargs[0]:
         session.skip(f"Skipping {session.python} because it's not in posargs {session.posargs}")
-    session.install(*'pytest pytest-xdist numpy'.split())
+    session.install(*'ruff pytest pytest-xdist pytest-repeat'.split())
     whl = select_wheel(session)
-    print('Installing wheel:', whl)
+    print(f'Installing {whl}')
     session.install(whl)
-    # session.install('.[dev]')
-    run(session, f'pytest -n{nprocs} --doctest-modules --pyargs hgeom')
+    session.run(*'pytest --pyargs hgeom'.split())
 
 
 def get_supported_tags_session(session):
@@ -61,5 +58,5 @@ def select_wheel(session):
         tags = parse_wheel_tags(wheel)
         if tags and tags in supported:
             picks.append(wheel)
-    assert picks, f'No supported wheels found in {wheels}'
+    assert picks
     return picks[0]

@@ -13,3 +13,5 @@ __pycache__
 hgeom/.ninja_deps
 hgeom/.ninja_log
 hgeom/build.ninja
+.doit.db
+_build

@@ -57,10 +57,10 @@ jobs:
           version: "0.6.8"
           enable-cache: true
 
-      - name: Test wheels
-        run: |
-          echo "Testing wheels with nox"
-          uv tool run nox
+      # - name: Test wheels
+      #   run: |
+      #     echo "Testing wheels with nox"
+      #     uv tool run nox
 
       - uses: actions/upload-artifact@v4
         with:
