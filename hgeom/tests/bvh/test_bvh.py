@@ -51,6 +51,18 @@ def test_bvh_isect_fixed():
 
 
 def helper_test_bvh_isect(Bvh):
+    """Compare and benchmark BVH intersection methods.
+
+    This function tests the BVH (Bounding Volume Hierarchy) intersection
+    methods by generating random geometries and positions, and comparing the
+    results of the BVH-based intersection with a naive approach. It measures
+    the performance of each method and prints out statistics on the number
+    of intersections and speeds.
+
+    Args:
+        Bvh (class): The BVH class used for constructing bounding volumes.
+    """
+
     t = wu.Timer().start()
 
     N1, N2 = 5, 7
@@ -344,6 +356,22 @@ def test_bvh_slide_single_xform():
 
 
 def helper_test_bvh_slide_whole(Bvh):
+    """Performs a series of BVH slide tests to evaluate performance and
+    accuracy.
+
+    This function iteratively generates random point sets and directions,
+    constructs BVHs, performs slide operations, and checks the results
+    against expected outcomes. It measures the time taken for each operation
+    and calculates statistics on the number of misses and errors.
+
+    Args:
+        Bvh (class): The BVH class to be used for constructing bounding volume hierarchies.
+
+    Returns:
+        None: This function does not return any value but prints performance
+            statistics.
+    """
+
     # timings wtih -Ofast
     # slide test 10,000 iter bvhslide float: 16,934/s double: 16,491/s bvhmin 17,968/s fracmiss: 0.0834
     atol = 1e-6 if isinstance(Bvh, SphereBVH_double) else 1e-4
@@ -497,6 +525,13 @@ def test_collect_pairs_simple_selection():
 
 
 def test_collect_pairs():
+    """Test the performance of collecting pairs using BVH and naive methods.
+
+    This function generates random point sets and measures the time taken to
+    collect pairs using both BVH-based and naive approaches. It also
+    verifies that the results from both methods are consistent.
+    """
+
     N1, N2 = 1, 50
     N = N1 * N2
     Npts = 500
@@ -776,6 +811,17 @@ def test_collect_pairs_range_sym():
 
 
 def test_slide_collect_pairs():
+    """Run a series of tests to measure and validate the performance and
+    accuracy of BVH-based slide and collect operations.
+
+    This function performs multiple iterations of BVH-based slide and
+    collect operations between two sets of random points. It measures and
+    prints statistics such as the average number of BVH slides and minimum
+    distance calculations per second, as well as the fraction of successful
+    hits during the collect operation. The function uses random
+    transformations and checks the correctness of the collected pairs.
+    """
+
     # timings wtih -Ofast
     # slide test 10,000 iter bvhslide float: 16,934/s double: 16,491/s bvhmin 17,968/s fracmiss: 0.0834
 
@@ -861,6 +907,21 @@ def random_walk(N):
 
 
 def test_bvh_isect_range(body=None, cart_sd=0.3, N2=10, mindist=0.02):
+    """Test BVH intersection range with various configurations.
+
+    This function tests the BVH (Bounding Volume Hierarchy) intersection
+    range by comparing the results from different methods and measuring
+    their performance. It generates random positions, creates BVHs, performs
+    intersections, and measures the time taken for each method. It also
+    includes assertions to ensure correctness.
+
+    Args:
+        body (BVH?): The BVH object to use. If None, two random BVHs are created.
+        cart_sd (float): Standard deviation for Cartesian coordinates.
+        N2 (int): Number of points per BVH.
+        mindist (float): Minimum distance between points.
+    """
+
     N1 = 1 if body else 2
     N = N1 * N2
     totbvh, totnaive, totbvh0, nhit = 0, 0, 0, 0
@@ -1006,6 +1067,20 @@ def test_bvh_isect_range_ids_double():
 
 
 def test_bvh_isect_range_lb_ub(body=None, cart_sd=0.3, N1=3, N2=20, mindist=0.02):
+    """Tests the BVH intersection range function with different parameters.
+
+    Args:
+        body (BVHNode?): The BVH node to use for testing. If None, a random BVH is generated.
+            Defaults to None.
+        cart_sd (float?): The standard deviation of the Cartesian coordinates used in the test.
+            Defaults to 0.3.
+        N1 (int?): The number of BVHs to generate when no `body` is provided. Defaults to
+            3.
+        N2 (int?): The number of iterations for each BVH. Defaults to 20.
+        mindist (float?): The minimum distance between the two sets of points used in the test.
+            Defaults to 0.02.
+    """
+
     N1 = 1 if body else N1
     N = N1 * N2
     Npts = 1000
