@@ -23,6 +23,20 @@ def test_matrix(session):
 
 
 def get_supported_tags_session(session):
+    """Get a list of supported tags for a session.
+
+    This function runs a Python command to retrieve the system tags using
+    the `packaging.tags` module and returns them as a list. It uses the
+    `session.run` method to execute the command, capturing the output which
+    is then parsed from JSON to return a list of tag strings.
+
+    Args:
+        session (Session): The session object used for running the command.
+
+    Returns:
+        List[str]: A list of supported tags.
+    """
+
     result = session.run(
         'python',
         '-c',

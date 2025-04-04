@@ -197,6 +197,34 @@ class Timer:
         file=None,
         pattern='',
     ):
+        """Generate a formatted report of timing data.
+
+        This function generates a detailed report based on the provided
+        parameters. It sorts, summarizes, and scales the timing data from the
+        checkpoints attribute of the current instance, and then prints or writes
+        it to a file.
+
+        Args:
+            order (str): The sorting order for the checkpoints ('longest', 'shortest').
+                Default is 'longest'.
+            summary (str): The summary type ('sum' for total time, 'avg' for average time).
+                Default is 'sum'.
+            namelen (int or None): Maximum length of checkpoint names. If None, it will be
+                determined automatically.
+                Default is None.
+            precision (str): Formatting string for the time values. Default is '10.5f'.
+            printme (bool): Whether to print the report to the console. Default is True.
+            scale (float): Scale factor for time values. Default is 1.0.
+            timecut (float): Minimum time value to include in the report. Default is 0.
+            file (str or None): File path to write the report to. If None, it will be printed.
+                Default is None.
+            pattern (str): Pattern to filter checkpoint names. Only checkpoints containing
+                this pattern will be included in the report.
+
+        Returns:
+            str: The formatted report as a string if not written to a file.
+        """
+
         if namelen is None:
             namelen = max(len(n.rstrip('$')) for n in self.checkpoints) if self.checkpoints else 0
         lines = [f'Times(name={self.name}, order={order}, summary={summary}):']

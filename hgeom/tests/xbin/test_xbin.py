@@ -33,6 +33,15 @@ def test_create_binner():
 
 
 def test_key_of():
+    """Benchmark performance of key generation and bincen computation using
+    Xbin_double and Xbin_float.
+
+    This function measures the time taken to generate keys and compute bin
+    centers for both double and float representations. It also calculates
+    the coverage rate by comparing unique keys generated with the total
+    number of samples.
+    """
+
     N = 100_000
     xb = Xbin_double(0.3, 5.0, 256.0)
     xbf = Xbin_float(0.3, 5.0, 256.0)
