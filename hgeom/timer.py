@@ -207,7 +207,7 @@ class Timer:
             if not cpoint.count(pattern):
                 continue
             a = ' ' if cpoint.endswith('$$$$') else '*'
-            lines.append(f'    {cpoint.rstrip("$"):>{namelen}} {a} {t*scale:{precision}}')
+            lines.append(f'    {cpoint.rstrip("$"):>{namelen}} {a} {t * scale:{precision}}')
             if scale == 1000:
                 lines[-1] += 'ms'
         r = os.linesep.join(lines)
