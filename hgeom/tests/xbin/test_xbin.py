@@ -57,8 +57,8 @@ def test_key_of():
     uniq = len(np.unique(k))
 
     print(
-        f'performance keys: {int(N/t):,} kfloat: {int(N/tf):,} cens: {int(N/tc):,}',
-        f'cover {N/uniq} tgen: {int(N/tgen):,}',
+        f'performance keys: {int(N / t):,} kfloat: {int(N / tf):,} cens: {int(N / tc):,}',
+        f'cover {N / uniq} tgen: {int(N / tgen):,}',
     )
 
 

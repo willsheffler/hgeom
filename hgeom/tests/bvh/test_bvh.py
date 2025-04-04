@@ -88,9 +88,9 @@ def helper_test_bvh_isect(Bvh):
         wu.bvh_isect_vec(bvh1, bvh2, pos1[1], pos2, mindist)
 
     print(
-        f'Ngeom {N1:,} Npos {N2:,} isect {nclash/N:4.2f} wu: {int(N/t.sum.bvh_isect):,}/s',
-        f'bvh_vec {int(N/t.sum.bvh_isect_vec):,} fastnaive {int(N/t.sum.naive_isect):,}/s',
-        f'ratio {int(t.sum.naive_isect/t.sum.bvh_isect_vec):,}x',
+        f'Ngeom {N1:,} Npos {N2:,} isect {nclash / N:4.2f} wu: {int(N / t.sum.bvh_isect):,}/s',
+        f'bvh_vec {int(N / t.sum.bvh_isect_vec):,} fastnaive {int(N / t.sum.naive_isect):,}/s',
+        f'ratio {int(t.sum.naive_isect / t.sum.bvh_isect_vec):,}x',
     )
 
 
@@ -405,9 +405,9 @@ def helper_test_bvh_slide_whole(Bvh):
     assert nerr <= 1
     N = N1 * N2
     print(
-        f'slide test {N:,} iter bvhslide double: {int(N/totbvh):,}/s bvhmin {int(N/totmin):,}/s',
+        f'slide test {N:,} iter bvhslide double: {int(N / totbvh):,}/s bvhmin {int(N / totmin):,}/s',
         # f"slide test {N:,} iter bvhslide float: {int(N/totbvhf):,}/s double: {int(N/totbvh):,}/s bvhmin {int(N/totmin):,}/s",
-        f'fracmiss: {nmiss/N}',
+        f'fracmiss: {nmiss / N}',
     )
 
 
@@ -577,7 +577,7 @@ def test_collect_pairs():
         assert len(y) == 5
 
     print(
-        f'collect test {N:,} iter wu {int(N/totbvh):,}/s naive {int(N/totnai):,}/s ratio {totnai/totbvh:7.2f} count-only {int(N/totct):,}/s avg cnt {ntot/N}'
+        f'collect test {N:,} iter wu {int(N / totbvh):,}/s naive {int(N / totnai):,}/s ratio {totnai / totbvh:7.2f} count-only {int(N / totct):,}/s avg cnt {ntot / N}'
     )
 
 
@@ -839,9 +839,9 @@ def test_slide_collect_pairs():
 
     N = N1 * N2
     print(
-        f'slide test {N:,} iter bvhslide double: {int(N/totbvh):,}/s bvhmin {int(N/totmin):,}/s',
+        f'slide test {N:,} iter bvhslide double: {int(N / totbvh):,}/s bvhmin {int(N / totmin):,}/s',
         # f"slide test {N:,} iter bvhslide float: {int(N/totbvhf):,}/s double: {int(N/totbvh):,}/s bvhmin {int(N/totmin):,}/s",
-        f'fracmiss: {nhit/N} collect {int(nhit/totcol):,}/s',
+        f'fracmiss: {nhit / N} collect {int(nhit / totcol):,}/s',
     )
 
 
@@ -921,8 +921,8 @@ def test_bvh_isect_range(body=None, cart_sd=0.3, N2=10, mindist=0.02):
         assert not np.any(isect[ok])
 
     print(
-        f'iscet {nhit:,} hit of {N:,} iter wu: {int(nhit/totbvh):,}/s fastnaive {int(nhit/totnaive):,}/s',
-        f'ratio {int(totnaive/totbvh):,}x isect-only: {totbvh/totbvh0:3.3f}x',
+        f'iscet {nhit:,} hit of {N:,} iter wu: {int(nhit / totbvh):,}/s fastnaive {int(nhit / totnaive):,}/s',
+        f'ratio {int(totnaive / totbvh):,}x isect-only: {totbvh / totbvh0:3.3f}x',
     )
 
 
@@ -1052,7 +1052,7 @@ def test_bvh_isect_range_lb_ub(body=None, cart_sd=0.3, N1=3, N2=20, mindist=0.02
         assert np.all(ub == ranges[:, 1])
 
     print(
-        f'iscet {nhit:,} hit of {N:,} iter, frangefail {nrangefail/nhit}',
+        f'iscet {nhit:,} hit of {N:,} iter, frangefail {nrangefail / nhit}',
     )
 
 

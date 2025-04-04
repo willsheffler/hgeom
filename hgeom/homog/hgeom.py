@@ -180,8 +180,7 @@ def hxform(x, stuff, homogout='auto', **kw):
         # this is a bad copout.. should make this check handle nans correctly
         if not stuff.shape[-2:] == (4, 1):
             raise ValueError(
-                f'malformed homogeneous coords with shape {stuff.shape}, '
-                'if passing points, try is_points=True'
+                f'malformed homogeneous coords with shape {stuff.shape}, if passing points, try is_points=True'
             )
 
     if orig:

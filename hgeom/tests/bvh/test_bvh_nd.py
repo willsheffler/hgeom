@@ -47,8 +47,8 @@ def test_bvh_isect7():
         ntot += Nsamp
 
     print(
-        f' bvh_isect7d frchit: {nhit/ntot:4.3f}',
-        f'bvh rate: {int(N/tbvh):,} naive rate: {int(N/tnai):,}',
+        f' bvh_isect7d frchit: {nhit / ntot:4.3f}',
+        f'bvh rate: {int(N / tbvh):,} naive rate: {int(N / tnai):,}',
     )
 
 
@@ -74,7 +74,7 @@ def test_bvh_mindist4():
         mindis = min(mindis, np.min(mindist1))
 
     print(
-        f' bvh_mindist4d mind: {mindis:5.3f} bvh rate: {int(N/tbvh):,} naive rate: {int(N/tnai):,}',
+        f' bvh_mindist4d mind: {mindis:5.3f} bvh rate: {int(N / tbvh):,} naive rate: {int(N / tnai):,}',
         # f"{tnai/tbvh:7.3f}",
     )
     print('bvh', tbvh)
@@ -103,7 +103,7 @@ def test_bvh_mindist7():
         mindis = min(mindis, np.min(mindist1))
 
     print(
-        f' bvh_mindist7d mind: {mindis:5.3f} bvh rate: {int(N/tbvh):,} naive rate: {int(N/tnai):,}',
+        f' bvh_mindist7d mind: {mindis:5.3f} bvh rate: {int(N / tbvh):,} naive rate: {int(N / tnai):,}',
         # f"{tnai/tbvh:7.3f}",
     )
     print('bvh', tbvh)
