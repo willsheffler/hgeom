@@ -25,6 +25,16 @@ def test_bvh_isect6():
 
 
 def test_bvh_isect7():
+    """Test the BVH intersection function (bvh_isect7d) against a naive
+    implementation.
+
+    This function performs multiple iterations to benchmark the performance
+    and correctness of the BVH intersection function. It generates random
+    points and constructs BVHs, then calculates intersections using both the
+    optimized bvh_isect7d function and a naive implementation. The results
+    are compared for correctness and performance metrics are printed.
+    """
+
     Nrep, Nbvh, Nsamp = 1, 1_000, 10000
     N = Nrep * Nsamp
     tbvh, tnai = 0, 0
@@ -53,6 +63,16 @@ def test_bvh_isect7():
 
 
 def test_bvh_mindist4():
+    """Test the `bvh_mindist4d` function against a naive implementation to
+    ensure correctness and performance.
+
+    This function runs multiple iterations of a benchmark where it creates
+    BVHs from random points, calculates the minimum distance using both the
+    optimized `bvh_mindist4d` function and a naive approach, and compares
+    the results. It also measures and prints the performance rates of both
+    methods.
+    """
+
     Nrep, Nbvh, Nsamp = 1, 1_000, 1000
     N = Nrep * Nsamp
     tbvh, tnai = 0, 0
@@ -82,6 +102,16 @@ def test_bvh_mindist4():
 
 
 def test_bvh_mindist7():
+    """Test the bvh_mindist7d function by comparing its performance and
+    accuracy with a naive implementation.
+
+    This function runs multiple repetitions of a test case where it
+    generates random points, creates BVH structures, and computes minimum
+    distances using both the optimized `bvh_mindist7d` and a naive approach.
+    It asserts that the results from both methods are consistent and
+    measures their performance to compare their efficiency.
+    """
+
     Nrep, Nbvh, Nsamp = 1, 1_000, 10000
     N = Nrep * Nsamp
     tbvh, tnai = 0, 0
