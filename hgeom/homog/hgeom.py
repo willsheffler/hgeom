@@ -122,6 +122,31 @@ def hxformvec(x, stuff, **kw):
 
 
 def hxform(x, stuff, homogout='auto', **kw):
+    """Transforms input data `x` using a transformation matrix or dictionary.
+
+    This function applies a homogeneous transformation to the input data. It
+    can handle nested lists, dictionaries, and custom objects with specific
+    methods. The transformation is applied element-wise if necessary.
+
+    Args:
+        x (array_like): Input data to be transformed.
+        stuff (list, dict, object): Transformation matrix or dictionary defining the transformation.
+            If a list or dictionary, it must contain elements that are convertible
+            to numeric types.
+        homogout (bool or str?): Controls whether the output should be in homogeneous coordinates.
+            Defaults to 'auto', which means true if `stuff` has 3 dimensions.
+        **kw: Additional keyword arguments passed to the transformation
+            implementation.
+
+    Returns:
+        array_like: Transformed data.
+
+    Raises:
+        ValueError: If the input list or dictionary does not contain valid numeric elements.
+        ValueError: If the homogeneous coordinates are malformed and cannot be corrected by
+            swapping axes.
+    """
+
     if isinstance(stuff, list) and len(stuff) and not isinstance(stuff[0], (int, float, list, tuple)):
         return [hxform(x, v) for v in stuff]
     if isinstance(stuff, dict) and len(stuff) and not isinstance(stuff[0], (int, float, list, tuple)):
