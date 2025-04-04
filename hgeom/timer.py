@@ -197,6 +197,29 @@ class Timer:
         file=None,
         pattern='',
     ):
+        """Generate a formatted report based on checkpoint times.
+
+        This function reports the times of checkpoints, optionally filtering by
+        a pattern and scaling the values. It prints or returns a formatted
+        string representation of the times.
+
+        Args:
+            order (str): The sorting order for the times ('longest', 'shortest', 'sum').
+            summary (str): The summary type to calculate ('min', 'max', 'avg', 'sum').
+            namelen (int?): The length of the name column. If None, it is calculated based on the
+                longest checkpoint name.
+            precision (str?): The format string for the time values.
+            printme (bool?): Whether to print the report to the console (True) or return it as a
+                string (False).
+            scale (float?): Scale factor for the times. Default is 1.0.
+            timecut (float?): Minimum time threshold to include in the report.
+            file (str?): Path to write the report to a file instead of printing it.
+            pattern (str?): Pattern to filter checkpoint names.
+
+        Returns:
+            str: The formatted report string if printme is False; otherwise, None.
+        """
+
         if namelen is None:
             namelen = max(len(n.rstrip('$')) for n in self.checkpoints) if self.checkpoints else 0
         lines = [f'Times(name={self.name}, order={order}, summary={summary}):']
