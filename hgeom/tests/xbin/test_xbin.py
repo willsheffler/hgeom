@@ -33,6 +33,17 @@ def test_create_binner():
 
 
 def test_key_of():
+    """Test the performance of key generation and bin center calculation for
+    both double and float data types.
+
+    This function measures the time taken to generate keys using `key_of`
+    method for both Xbin_double (double precision) and Xbin_float (float
+    precision). It also calculates the time taken for `bincen_of` method.
+    The function compares the performance of these methods and prints the
+    number of operations per second (ops/s) for each, along with coverage
+    and generation times.
+    """
+
     N = 100_000
     xb = Xbin_double(0.3, 5.0, 256.0)
     xbf = Xbin_float(0.3, 5.0, 256.0)

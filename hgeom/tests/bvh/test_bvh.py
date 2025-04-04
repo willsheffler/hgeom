@@ -51,6 +51,17 @@ def test_bvh_isect_fixed():
 
 
 def helper_test_bvh_isect(Bvh):
+    """Test the intersection functionality of BVH (Bounding Volume Hierarchy)
+    with various configurations.
+
+    This function performs a series of tests to evaluate the intersection
+    performance and accuracy between two sets of random spheres using BVH
+    and a naive method.
+
+    Args:
+        Bvh (class): A class representing the BVH data structure.
+    """
+
     t = wu.Timer().start()
 
     N1, N2 = 5, 7
@@ -344,6 +355,19 @@ def test_bvh_slide_single_xform():
 
 
 def helper_test_bvh_slide_whole(Bvh):
+    """Performs a series of BVH-based sliding tests to benchmark and validate
+    functionality.
+
+    This function iteratively performs sliding operations between two sets
+    of BVH trees, comparing performance and correctness against expected
+    results. It generates random points, transformations, and distances to
+    simulate realistic scenarios. The function calculates various timing
+    metrics and asserts the accuracy of the sliding operation results.
+
+    Args:
+        Bvh (class): The BVH class used for creating and querying BVH trees.
+    """
+
     # timings wtih -Ofast
     # slide test 10,000 iter bvhslide float: 16,934/s double: 16,491/s bvhmin 17,968/s fracmiss: 0.0834
     atol = 1e-6 if isinstance(Bvh, SphereBVH_double) else 1e-4
@@ -497,6 +521,15 @@ def test_collect_pairs_simple_selection():
 
 
 def test_collect_pairs():
+    """Test the collection of pairs using BVH and naive methods.
+
+    This function performs a series of tests to compare the performance and
+    correctness of collecting pairs between two sets of points using both
+    BVH-based and naive algorithms. It generates random point clouds,
+    calculates pairwise distances, and asserts the accuracy of the collected
+    pairs.
+    """
+
     N1, N2 = 1, 50
     N = N1 * N2
     Npts = 500
@@ -776,6 +809,17 @@ def test_collect_pairs_range_sym():
 
 
 def test_slide_collect_pairs():
+    """Test function to evaluate the performance of BVH-based collision
+    detection and sliding.
+
+    This function performs a series of iterations to simulate realistic
+    collision scenarios using BVH (Bounding Volume Hierarchy) structures. It
+    measures the average time taken for BVH slide, minimum distance
+    computation, and pair collection operations. The results are printed at
+    the end, providing insights into the performance of these operations
+    under different conditions.
+    """
+
     # timings wtih -Ofast
     # slide test 10,000 iter bvhslide float: 16,934/s double: 16,491/s bvhmin 17,968/s fracmiss: 0.0834
 
@@ -861,6 +905,25 @@ def random_walk(N):
 
 
 def test_bvh_isect_range(body=None, cart_sd=0.3, N2=10, mindist=0.02):
+    """Test BVH intersection range with different methods.
+
+    This function performs multiple BVH (Bounding Volume Hierarchy)
+    intersection range tests using different algorithms: 1. The original BVH
+    intersection algorithm. 2. A naive BVH intersection algorithm for
+    comparison. 3. A fixed-range vectorized BVH intersection algorithm.  The
+    function generates random points and computes the intersection ranges
+    between two BVHs, comparing the results from the different methods to
+    ensure consistency. It also measures and prints the performance of each
+    method in terms of speed.
+
+    Args:
+        body (Body?): The body object containing the BVH data. If not provided, random BVH
+            data is generated.
+        cart_sd (float?): The standard deviation for the Cartesian transformation. Default is 0.3.
+        N2 (int?): The number of samples per body. Default is 10.
+        mindist (float?): The minimum distance between points. Default is 0.02.
+    """
+
     N1 = 1 if body else 2
     N = N1 * N2
     totbvh, totnaive, totbvh0, nhit = 0, 0, 0, 0
@@ -1006,6 +1069,23 @@ def test_bvh_isect_range_ids_double():
 
 
 def test_bvh_isect_range_lb_ub(body=None, cart_sd=0.3, N1=3, N2=20, mindist=0.02):
+    """Test BVH isection range with optional body and parameters.
+
+    This function tests the BVH (Bounding Volume Hierarchy) isection range
+    by iterating through multiple samples of random positions and checking
+    the intersection ranges against expected values. It uses a set of
+    keywords to configure the isection range calculations.
+
+    Args:
+        body (Optional[Body]): An optional Body object to use for BVH calculations.
+            If None, generates random points for BVH creation.
+        cart_sd (float): Standard deviation for Cartesian transformations.
+            Default is 0.3.
+        N1 (int): Number of BVH sets to create. Default is 3.
+        N2 (int): Number of samples per set. Default is 20.
+        mindist (float): Minimum distance between points. Default is 0.02.
+    """
+
     N1 = 1 if body else N1
     N = N1 * N2
     Npts = 1000
