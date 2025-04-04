@@ -122,6 +122,36 @@ def hxformvec(x, stuff, **kw):
 
 
 def hxform(x, stuff, homogout='auto', **kw):
+    """Transform input coordinates or objects using a transformation matrix.
+
+    This function applies a homogeneous transformation to the input data,
+    which can be a single object, a list of objects, or a dictionary of
+    objects. The transformation is defined by the input `x`, which should be
+    a transformation matrix. The output can be controlled with the
+    `homogout` parameter.
+
+    Args:
+        x (array_like): A 2D or 3D homogeneous transformation matrix.
+        stuff (list, dict, object): The data to be transformed. Can be a single object,
+            a list of objects, or a dictionary of objects that have a `.coords`
+            attribute
+            and an optional `.copy` method for deep copying.
+        homogout (str, bool): Controls the output format. Possible values are:
+            - 'auto': Automatically determine the output format based on the input
+            data.
+            - False: Do not return homogeneous coordinates.
+            - True: Return homogeneous coordinates.
+
+    Returns:
+        array_like: The transformed data in the specified output format.
+
+    Raises:
+        ValueError: If the input data has an unsupported shape or if the transformation
+            matrix is invalid.
+        AssertionError: If the result contains invalid transformations (e.g., points outside
+            the valid range).
+    """
+
     if isinstance(stuff, list) and len(stuff) and not isinstance(stuff[0], (int, float, list, tuple)):
         return [hxform(x, v) for v in stuff]
     if isinstance(stuff, dict) and len(stuff) and not isinstance(stuff[0], (int, float, list, tuple)):
